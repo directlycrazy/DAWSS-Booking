@@ -29,9 +29,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} font-[family-name:var(--font-geist-sans)] antialiased`}
       >
-        {children}
+        <main className="py-16 sm:py-20 mx-auto lg:px-8 lg:max-w-7xl px-4 sm:px-6 max-w-2xl">
+          {children}
+        </main>
         <Toaster />
       </body>
     </html>

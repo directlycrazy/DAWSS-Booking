@@ -39,7 +39,7 @@ export default function Login() {
 								},
 								onResponse: () => {
 									setLoading(false);
-									toast.info("An email has been sent to your inbox.");
+									toast.success("An email has been sent to your inbox.");
 								},
 								onError: (ctx) => {
 									toast.error(ctx.error.message);
