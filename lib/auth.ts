@@ -16,7 +16,7 @@ export const auth = betterAuth({
 				await resend.emails.send({
 					from: "DAWSS Booking <dawbooking@mail.jamescolb.com>",
 					to: [data.email],
-					subject: "Login to your Donald A. Wilson Prom Booking Account",
+					subject: "Login to your Donald A. Wilson Grad Social Booking Account",
 					html: `<p>Hello, Donald A. Wilson Student,</p>
 					<p>
 						<b>Click the following link to access your account:</b>
@@ -25,7 +25,7 @@ export const auth = betterAuth({
 					<p>If you have any issues accessing the application, please wait a few minutes and try again. If this does not work, please contact a member of the Donald A. Wilson faculty to help assist you.
 					<p>
 						<span>Thanks,</span>
-						<span>Donald A. Wilson Prom Booking Team</span>
+						<span>Donald A. Wilson Grad Social Booking Team</span>
 					</p>
 					`
 				})

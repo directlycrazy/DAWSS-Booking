@@ -14,7 +14,7 @@ export default function Login() {
 	const [loading, setLoading] = useState(false);
 
 	return (
-		<Card className="max-w-md">
+		<Card>
 			<CardHeader>
 				<CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
 				<CardDescription className="text-xs md:text-sm">
@@ -30,9 +30,9 @@ export default function Login() {
 							if (!email) {
 								return toast.error("Please enter an email.");
 							}
-							// if (!email.endsWith("@ddsbstudent.ca") && !email.endsWith("@ddsb.ca")) {
-							// 	return toast.error("Please enter a valid email ending in @ddsb.ca or @ddsbstudent.ca.");
-							// }
+							if (!email.endsWith("@ddsbstudent.ca") && !email.endsWith("@ddsb.ca")) {
+								return toast.error("Please enter a valid email ending in @ddsb.ca or @ddsbstudent.ca.");
+							}
 							await signIn.magicLink({ email }, {
 								onRequest: () => {
 									setLoading(true);

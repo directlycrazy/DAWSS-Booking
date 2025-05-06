@@ -15,10 +15,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | DAWSS Prom Booking",
-    default: "DAWSS Prom Booking"
+    template: "%s | DAWSS Grad Social Booking",
+    default: "DAWSS Grad Social Booking"
   },
-  description: "Manage your 2025 Donald A. Wilson prom booking.",
+  description: "Manage your 2025 Donald A. Wilson Grad Social booking.",
 };
 
 export default function RootLayout({

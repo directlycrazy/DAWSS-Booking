@@ -1,5 +1,5 @@
-# DAWSS Prom Booking
-A simple website to handle prom booking for the 2025 Donald A. Wilson graduating class.
+# DAWSS Grad Social Booking
+A simple website to handle Grad Social booking for the 2025 Donald A. Wilson graduating class.
 
 ### Environment Variables
 ```env
