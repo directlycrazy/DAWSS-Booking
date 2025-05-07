@@ -10,10 +10,10 @@ export default function Breadcrumbs() {
 		<>
 			<Breadcrumb>
 				<BreadcrumbList>
-					<BreadcrumbItem className="hidden md:block">
+					<BreadcrumbItem>
 						<BreadcrumbLink href="/dashboard">Booking</BreadcrumbLink>
 					</BreadcrumbItem>
-					<BreadcrumbSeparator className="hidden md:block" />
+					<BreadcrumbSeparator />
 					<BreadcrumbItem>
 						<BreadcrumbPage>{pathname === "/" ? "Login" : "Student Dashboard"}</BreadcrumbPage>
 					</BreadcrumbItem>

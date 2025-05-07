@@ -24,13 +24,13 @@ export default async function Student() {
 				</AlertDescription>
 			</Alert>
 
-			<div className="flex w-full gap-x-2">
+			<div className="flex flex-col md:flex-row w-full gap-y-2 md:gap-y-0 md:gap-x-2">
 				<Link href="/dashboard/book" className="w-full">
 					<Card className="gap-0">
 						<CardContent>
 							<TicketCheck className="w-10 h-10" />
 							<h1 className="text-lg font-bold">Book Your Spot</h1>
-							<p>Click Here</p>
+							<p className="text-sm text-muted-foreground">Tap to book your spot.</p>
 						</CardContent>
 					</Card>
 				</Link>
@@ -39,7 +39,7 @@ export default async function Student() {
 						<CardContent>
 							<MapPin className="w-10 h-10" />
 							<h1 className="text-lg font-bold">Venue Details</h1>
-							<p>Click Here</p>
+							<p className="text-sm text-muted-foreground">Tap to learn more about the venue.</p>
 						</CardContent>
 					</Card>
 				</Link>

@@ -17,7 +17,7 @@ export default function Settings() {
 		<>
 			<Title>Settings</Title>
 			<div className="-mb-3">
-				<h3 className="font-bold">Color Mode</h3>
+				<h3 className="font-bold">Theme</h3>
 			</div>
 			<Select onValueChange={changeTheme} value={theme}>
 				<SelectTrigger className="w-[180px]">
