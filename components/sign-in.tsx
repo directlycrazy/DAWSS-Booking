@@ -16,7 +16,7 @@ export default function Login() {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
+				<CardTitle className="text-lg md:text-xl">Welcome to Wilson Grad Social Seat Booking.</CardTitle>
 				<CardDescription className="text-xs md:text-sm">
 					Enter your DDSB email below to login to your account.
 				</CardDescription>
@@ -25,7 +25,7 @@ export default function Login() {
 				<div className="grid gap-4">
 					<div className="grid gap-2">
 						<Label htmlFor="email">Email</Label>
-						<Input id="email" type="email" autoComplete="off" required onChange={(e) => { setEmail(e.target.value); }} value={email} />
+						<Input id="email" type="email" autoComplete="off" placeholder="s000000000@ddsbstudent.ca" required onChange={(e) => { setEmail(e.target.value); }} value={email} />
 						<Button disabled={loading} className="gap-2" onClick={async () => {
 							if (!email) {
 								return toast.error("Please enter an email.");

@@ -13,7 +13,7 @@ export default async function Login() {
 
 	return (
 		<>
-			<div className="flex justify-center h-full w-full">
+			<div className="flex justify-center items-center h-full">
 				<Tabs defaultValue="email" className="w-[500px]">
 					<TabsList>
 						<TabsTrigger value="email">Using Email</TabsTrigger>
@@ -23,6 +23,7 @@ export default async function Login() {
 						<SignIn />
 					</TabsContent>
 					<TabsContent value="oen">
+						Not Implemented
 						{/* <SignUp /> */}
 					</TabsContent>
 				</Tabs>
