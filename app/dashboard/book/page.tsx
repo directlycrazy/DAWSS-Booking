@@ -2,15 +2,22 @@ import Title from "@/components/title";
 import { Seat } from "./seat";
 import { Separator } from "@/components/ui/separator";
 import SeatsGrid from "./seats-grid";
+import { db } from "@/drizzle/db";
 
-export default function Book() {
+export default async function Book() {
+	const tables = await db.query.table.findMany({
+		with: {
+			seats: true
+		}
+	})
+
 	return (
 		<>
 			<div>
 				<Title>Book Your Spot</Title>
 				<p className="text-muted-foreground">Click anywhere on the grid to book a spot or see who has already booked it.</p>
 			</div>
-			<SeatsGrid />
+			<SeatsGrid tables={tables} />
 			<Separator />
 			<div className="space-y-2">
 				<p className="text-muted-foreground">Legend</p>

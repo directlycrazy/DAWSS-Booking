@@ -1,6 +1,7 @@
 import Title from "@/components/title";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { db } from "@/drizzle/db";
 import { auth } from "@/lib/auth"
 import { Info, MapPin, TicketCheck } from "lucide-react";
 import { headers } from "next/headers"
@@ -13,14 +14,20 @@ export default async function Student() {
 
 	if (!session) return;
 
+	const booked = await db.query.user.findFirst({
+		where: (user, { eq }) => (eq(user.id, session.user.id)),
+	});
+
+	const submitted = booked?.seatId;
+
 	return (
 		<>
 			<Title>Welcome, {session.user.name}.</Title>
 			<Alert variant="default">
 				<Info className="h-4 w-4" />
-				<AlertTitle>Your selection is currently not submitted.</AlertTitle>
+				<AlertTitle>Your selection is currently <b>{submitted ? "submitted!" : "not submitted."}</b></AlertTitle>
 				<AlertDescription>
-					<p>Booking is still open until June 4th. <Link className="font-bold underline" href="/dashboard/book">Submit Now</Link></p>
+					{submitted ? <p>You may still make changes until June 4th.</p> : <p>Booking is still open until June 4th. <Link className="font-bold underline" href="/dashboard/book">Submit Now</Link></p>}
 				</AlertDescription>
 			</Alert>
 

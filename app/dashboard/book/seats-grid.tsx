@@ -14,7 +14,16 @@ import {
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-export default function SeatsGrid() {
+export default function SeatsGrid({ tables }: {
+	tables: {
+		id: number;
+		seats: {
+			id: number;
+			userId: string | null;
+			tableId: number | null;
+		}[];
+	}[]
+}) {
 	const [selectedSeat, setSelectedSeat] = useState("");
 	const [existingBooking, setExistingBooking] = useState(false);
 	const [newBooking, setNewBooking] = useState(false);
@@ -22,14 +31,14 @@ export default function SeatsGrid() {
 	return (
 		<>
 			<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-2">
-				{Array.from({ length: 8 }, (_, i) => {
+				{tables.map((table, i) => {
 					return (
 						<Card className="p-4" key={i}>
 							<div className="grid grid-cols-4 gap-y-2 gap-x-2">
-								{Array.from({ length: 8 }, (_, i) => {
-									const booked = Math.floor(Math.random() * 2) === 1;
+								{table.seats.map((seat, i) => {
+									console.log(seat);
 									return (
-										<Seat id={String(Math.floor(Math.random() * 20000))} initialBooked={booked} selectedSeat={setSelectedSeat} key={i} existingModal={setExistingBooking} newModal={setNewBooking} />
+										<Seat id={String(Math.floor(Math.random() * 20000))} initialBooked={seat.userId !== null && seat.userId.length > 0} selectedSeat={setSelectedSeat} key={i} existingModal={setExistingBooking} newModal={setNewBooking} />
 									)
 								})}
 							</div>
