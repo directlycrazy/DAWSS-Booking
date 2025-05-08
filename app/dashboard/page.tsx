@@ -17,7 +17,12 @@ export default async function Student() {
 
 	const booked = await db.query.user.findFirst({
 		where: (user, { eq }) => (eq(user.id, session.user.id)),
+		with: {
+			seat: true
+		}
 	});
+
+	console.log(booked)
 
 	const submitted = booked?.seatId;
 	console.log(submitted)
