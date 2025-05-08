@@ -8,6 +8,9 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import NextTopLoader from 'nextjs-toploader';
 import { ThemeProvider } from "@/components/theme-provider"
 import Breadcrumbs from "@/components/breadcrumbs";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { db } from "@/drizzle/db";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,13 +30,21 @@ export const metadata: Metadata = {
   description: "Manage your 2025 Donald A. Wilson Grad Social booking.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
+
+  const user = await db.query.user.findFirst({
+    where: (s, { eq }) => (eq(s.id, session?.user.id || "")),
+  })
+
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-[family-name:var(--font-geist-sans)] antialiased`}
       >
@@ -43,7 +54,7 @@ export default function RootLayout({
             <Card className="overflow-hidden p-0 md:max-h-[550px] w-full md:max-w-[800px] lg:max-w-[950px]">
               <CardContent className="p-0">
                 <SidebarProvider className="items-start">
-                  <Sidebar />
+                  <Sidebar admin={(session && user && user.role) || false} />
                   <main className="flex flex-1 flex-col overflow-hidden">
                     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b">
                       <div className="flex items-center gap-2 px-4">

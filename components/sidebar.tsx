@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, MapPin, Settings, TicketCheck, User } from "lucide-react"
+import { Home, MapPin, Settings, ShieldHalf, TicketCheck, User } from "lucide-react"
 import {
 	Sidebar,
 	SidebarContent,
@@ -41,7 +41,7 @@ const items = [
 	},
 ]
 
-export default function AppSidebar() {
+export default function AppSidebar({ admin }: { admin: boolean }) {
 	const pathname = usePathname();
 
 	return (
@@ -63,6 +63,19 @@ export default function AppSidebar() {
 									</SidebarMenuButton>
 								</SidebarMenuItem>
 							))}
+							{admin && <>
+								<SidebarMenuItem>
+									<SidebarMenuButton
+										asChild
+										isActive={"/dashboard/admin" === pathname}
+									>
+										<Link href="/dashboard/admin">
+											<ShieldHalf />
+											<span>Admin</span>
+										</Link>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							</>}
 						</SidebarMenu>
 					</SidebarGroupContent>
 				</SidebarGroup>
