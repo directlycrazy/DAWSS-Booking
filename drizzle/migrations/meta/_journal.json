@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1746479269861,
-      "tag": "0000_white_slapstick",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1746670616283,
-      "tag": "0001_neat_boomerang",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1746672012188,
-      "tag": "0002_boring_the_stranger",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1746672334457,
-      "tag": "0003_mysterious_shinobi_shaw",
+      "when": 1746735449612,
+      "tag": "0000_yielding_paibok",
       "breakpoints": true
     }
   ]

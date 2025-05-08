@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "3be0da7c-843b-4773-936a-66364249ad2a",
+  "id": "859a526c-6a5f-49f9-a4ca-4121d8a210a9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -119,6 +119,64 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+    "seat": {
+      "name": "seat",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "booked_to": {
+          "name": "booked_to",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "table_id": {
+          "name": "table_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "seat_booked_to_user_id_fk": {
+          "name": "seat_booked_to_user_id_fk",
+          "tableFrom": "seat",
+          "tableTo": "user",
+          "columnsFrom": [
+            "booked_to"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "seat_table_id_table_id_fk": {
+          "name": "seat_table_id_table_id_fk",
+          "tableFrom": "seat",
+          "tableTo": "table",
+          "columnsFrom": [
+            "table_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "session": {
       "name": "session",
       "columns": {
@@ -207,6 +265,23 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+    "table": {
+      "name": "table",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "user": {
       "name": "user",
       "columns": {
@@ -234,6 +309,29 @@
         "oen": {
           "name": "oen",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "role": {
+          "name": "role",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "attending": {
+          "name": "attending",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "seat_id": {
+          "name": "seat_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -272,6 +370,13 @@
           "name": "user_oen_unique",
           "columns": [
             "oen"
+          ],
+          "isUnique": true
+        },
+        "user_seat_id_unique": {
+          "name": "user_seat_id_unique",
+          "columns": [
+            "seat_id"
           ],
           "isUnique": true
         }

@@ -6,19 +6,21 @@ import { auth } from "@/lib/auth"
 import { Info, MapPin, TicketCheck } from "lucide-react";
 import { headers } from "next/headers"
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function Student() {
 	const session = await auth.api.getSession({
 		headers: await headers()
 	})
 
-	if (!session) return;
+	if (!session) return redirect("/");
 
 	const booked = await db.query.user.findFirst({
 		where: (user, { eq }) => (eq(user.id, session.user.id)),
 	});
 
 	const submitted = booked?.seatId;
+	console.log(submitted)
 
 	return (
 		<>
