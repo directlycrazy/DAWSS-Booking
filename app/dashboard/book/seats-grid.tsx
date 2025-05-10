@@ -16,7 +16,7 @@ import {
 import { toast } from "sonner";
 import Loader from "@/components/loader";
 
-export default function SeatsGrid() {
+export default function SeatsGrid({ userId }: { userId?: string }) {
 	const [tables, setTables] = useState<{
 		id: number;
 		seats: {
@@ -30,8 +30,12 @@ export default function SeatsGrid() {
 	const [existingBooking, setExistingBooking] = useState(false);
 	const [newBooking, setNewBooking] = useState(false);
 
-	const bookSpot = async () => {
-		const res = await fetch(`/api/book/${selectedSeat}`);
+	const bookSpot = async (overwrite: boolean) => {
+		if (overwrite && userId) {
+			await fetch(`/api/admin/removebooking/${userId}`);
+			toast.info("Successfully overwritten.");
+		}
+		const res = await fetch(`/api/book/${selectedSeat}${userId ? `?user=${userId}` : ""}`);
 		const text = await res.text();
 		toast.info(text);
 		getNewTables();
@@ -93,6 +97,7 @@ export default function SeatsGrid() {
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Dismiss</AlertDialogCancel>
+						{userId && <AlertDialogAction onClick={() => bookSpot(true)}>Overwrite</AlertDialogAction>}
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
@@ -106,7 +111,7 @@ export default function SeatsGrid() {
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction onClick={bookSpot}>Continue</AlertDialogAction>
+						<AlertDialogAction onClick={() => bookSpot(false)}>Continue</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
