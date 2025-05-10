@@ -1,9 +1,9 @@
 import Title from "@/components/title";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
 import { auth } from "@/lib/auth"
-import { Info, MapPin, TicketCheck } from "lucide-react";
+import { Info, MapPin, Settings, TicketCheck, User } from "lucide-react";
 import { headers } from "next/headers"
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -59,23 +59,25 @@ export default async function Student() {
 				</Link>
 			</div>
 
-			<div className="flex w-full gap-x-2">
-				<Card className="gap-0 w-full">
-					<CardHeader className="text-sm text-muted-foreground">
-						Total Attendees
-					</CardHeader>
-					<CardContent>
-						<h1 className="text-3xl font-bold">124</h1>
-					</CardContent>
-				</Card>
-				<Card className="gap-0 w-full">
-					<CardHeader className="text-sm text-muted-foreground">
-						Remaining Seats
-					</CardHeader>
-					<CardContent>
-						<h1 className="text-3xl font-bold">53</h1>
-					</CardContent>
-				</Card>
+			<div className="flex flex-col md:flex-row w-full gap-y-2 md:gap-y-0 md:gap-x-2">
+				<Link href="/dashboard/book" className="w-full">
+					<Card className="gap-0">
+						<CardContent>
+							<User className="w-10 h-10" />
+							<h1 className="text-lg font-bold">Your Profile</h1>
+							<p className="text-sm text-muted-foreground">Tap to see your profile.</p>
+						</CardContent>
+					</Card>
+				</Link>
+				<Link href="/dashboard/venue" className="w-full">
+					<Card className="gap-0">
+						<CardContent>
+							<Settings className="w-10 h-10" />
+							<h1 className="text-lg font-bold">Settings</h1>
+							<p className="text-sm text-muted-foreground">Tap to change app settings.</p>
+						</CardContent>
+					</Card>
+				</Link>
 			</div>
 		</>
 	)
