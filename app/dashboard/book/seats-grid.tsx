@@ -75,7 +75,7 @@ export default function SeatsGrid({ userId }: { userId?: string }) {
 				{tables.map((table, i) => {
 					return (
 						<Card className="p-4" key={i}>
-							<div className="grid grid-cols-4 gap-y-2 gap-x-2">
+							<div className="grid grid-cols-5 gap-y-2 gap-x-2">
 								{table.seats.map((seat, i) => {
 									return (
 										<Seat id={String(seat.id)} initialBooked={seat.userId !== null && seat.userId.length > 0} selectedSeat={setSelectedSeat} key={i} existingModal={setExistingBooking} newModal={setNewBooking} />

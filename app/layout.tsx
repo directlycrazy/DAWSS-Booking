@@ -61,7 +61,7 @@ export default async function RootLayout({
                         <Breadcrumbs />
                       </div>
                     </header>
-                    <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0 m-4">
+                    <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0 m-4 md:max-h-[470px]">
                       {children}
                     </div>
                   </main>
