@@ -60,7 +60,7 @@ export default async function Student() {
 			</div>
 
 			<div className="flex flex-col md:flex-row w-full gap-y-2 md:gap-y-0 md:gap-x-2">
-				<Link href="/dashboard/book" className="w-full">
+				<Link href="/dashboard/profile" className="w-full">
 					<Card className="gap-0">
 						<CardContent>
 							<User className="w-10 h-10" />
@@ -69,7 +69,7 @@ export default async function Student() {
 						</CardContent>
 					</Card>
 				</Link>
-				<Link href="/dashboard/venue" className="w-full">
+				<Link href="/dashboard/settings" className="w-full">
 					<Card className="gap-0">
 						<CardContent>
 							<Settings className="w-10 h-10" />
