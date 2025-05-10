@@ -16,6 +16,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ seat
 	})
 
 	if (!user) return new Response("You are not signed in.", { status: 400 });
+	if (!user.attending) return new Response("You have not been marked as attending the social. Please talk to a member of faculty to be able to book.", { status: 400 });
 
 	console.log(user)
 

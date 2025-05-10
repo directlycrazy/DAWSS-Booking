@@ -21,6 +21,7 @@ export default async function Admin() {
 	return (
 		<>
 			<Title>Admin</Title>
+			<p className="-mt-4 text-sm">Tick &quot;attending&quot; to allow the user to book a seat. Use the actions on the right side to remove a user&apos;s booking, or set it for them.</p>
 			<UserTable />
 		</>
 	)

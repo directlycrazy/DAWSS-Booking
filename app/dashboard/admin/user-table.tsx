@@ -34,6 +34,8 @@ import {
 	TableRow,
 } from "@/components/ui/table"
 import { useEffect } from "react"
+import { toast } from "sonner"
+import { redirect } from "next/navigation"
 
 interface UserInt {
 	id: string,
@@ -75,9 +77,10 @@ export const columns: ColumnDef<UserInt>[] = [
 		header: "Attending",
 		cell: ({ row }) => (
 			<Checkbox
-				checked={row.getValue("attending")}
+				defaultChecked={row.getValue("attending")}
 				onCheckedChange={async (value) => {
-					await fetch(`/api/admin/attending/${row.getValue("id")}`)
+					const req = await fetch(`/api/admin/attending/${row.getValue("id")}`)
+					if (req.ok || req.status === 200) toast.success("Successfully changed.")
 					row.toggleSelected(!value)
 				}}
 				aria-label="Select row"
@@ -89,7 +92,7 @@ export const columns: ColumnDef<UserInt>[] = [
 		header: "Booked",
 		cell: ({ row }) => (
 			<Checkbox
-				checked={row.getValue("seatId") !== null}
+				checked={row.original.seatId !== null}
 				onCheckedChange={(value) => row.toggleSelected(!!value)}
 				aria-label="Select row"
 			/>
@@ -99,8 +102,6 @@ export const columns: ColumnDef<UserInt>[] = [
 		id: "actions",
 		enableHiding: false,
 		cell: ({ row }) => {
-			const payment = row.original
-
 			return (
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
@@ -110,15 +111,14 @@ export const columns: ColumnDef<UserInt>[] = [
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
-						<DropdownMenuLabel>Actions</DropdownMenuLabel>
-						<DropdownMenuItem
-							onClick={() => navigator.clipboard.writeText(payment.id)}
-						>
-							Copy payment ID
-						</DropdownMenuItem>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem>View customer</DropdownMenuItem>
-						<DropdownMenuItem>View payment details</DropdownMenuItem>
+						<DropdownMenuItem onClick={async () => {
+							const res = await fetch(`/api/admin/removebooking/${row.original.id}`);
+							if (res.ok && res.status === 200) {
+								toast.success("Successfully removed booking.");
+								window.location.reload();
+							}
+						}}>Remove Existing Booking</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => redirect(`/dashboard/admin/set/${row.original.id}`)}>Manually Set New Booking</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			)
@@ -166,7 +166,7 @@ export default function UserTable() {
 	}, [])
 
 	return (
-		<div className="w-full">
+		<div className="w-full -mt-6">
 			<div className="flex items-center py-4">
 				<Input
 					placeholder="Filter users..."
