@@ -1,37 +1,19 @@
-# syntax = docker/dockerfile:1
+FROM node:lts-alpine3.19
 
-# Adjust BUN_VERSION as desired
-ARG BUN_VERSION=1.2.4
-FROM oven/bun:${BUN_VERSION}-slim AS base
+RUN mkdir -p /opt/app
 
-# Bun app lives here
-WORKDIR /app
+WORKDIR /opt/app
 
-# Set production environment
-ENV NODE_ENV="production"
+COPY package*.json ./
 
+RUN npm install
 
-# Throw-away build stage to reduce size of final image
-FROM base AS build
-
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential pkg-config python-is-python3
-
-# Install node modules
-COPY bun.lock package.json ./
-RUN bun install --ci
-
-# Copy application code
 COPY . .
-RUN bun run build
 
-# Final stage for app image
-FROM base
+RUN mkdir database
+RUN npm run migrate
+RUN npm run build
 
-# Copy built application
-COPY --from=build /app /app
-
-# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD [ "bun", "run", "start:prod" ]
+
+CMD ["npm", "run", "prod:start"]
