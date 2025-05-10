@@ -17,7 +17,7 @@ export default async function Login() {
 				<Tabs defaultValue="email" className="w-[500px]">
 					<TabsList>
 						<TabsTrigger value="email">Using Email</TabsTrigger>
-						<TabsTrigger value="oen">Using OEN Number</TabsTrigger>
+						{/* <TabsTrigger value="oen">Using OEN Number</TabsTrigger> */}
 					</TabsList>
 					<TabsContent value="email">
 						<SignIn />
