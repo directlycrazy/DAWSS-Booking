@@ -3,7 +3,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
 import { auth } from "@/lib/auth"
-import { Info, MapPin, Settings, TicketCheck, User } from "lucide-react";
+import { Info, MapPin, Settings, ShieldHalf, TicketCheck, User } from "lucide-react";
 import { headers } from "next/headers"
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -22,10 +22,9 @@ export default async function Student() {
 		}
 	});
 
-	console.log(booked)
+	if (!booked) return redirect("/");
 
 	const submitted = booked?.seatId;
-	console.log(submitted)
 
 	return (
 		<>
@@ -79,6 +78,18 @@ export default async function Student() {
 					</Card>
 				</Link>
 			</div>
+
+			{booked.role && <div className="flex flex-col md:flex-row w-full gap-y-2 md:gap-y-0 md:gap-x-2">
+				<Link href="/dashboard/admin" className="w-full">
+					<Card className="gap-0">
+						<CardContent>
+							<ShieldHalf className="w-10 h-10" />
+							<h1 className="text-lg font-bold">Admin</h1>
+							<p className="text-sm text-muted-foreground">Tap to administrate the application.</p>
+						</CardContent>
+					</Card>
+				</Link>
+			</div>}
 		</>
 	)
 }
