@@ -31,7 +31,10 @@ export const auth = betterAuth({
 				})
 			},
 		}),
-
 	],
+	emailAndPassword: {
+		enabled: true,
+		disableSignUp: true
+	},
 	baseURL: process.env.BETTER_AUTH_URL
 });

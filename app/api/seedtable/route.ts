@@ -4,7 +4,7 @@ import { seat, table } from "@/drizzle/schema";
 export const GET = async () => {
 	if (process.env.NODE_ENV === "production") return;
 
-	for (let i = 0; i < 30; i++) {
+	for (let i = 0; i < 20; i++) {
 		const t = await db.insert(table).values({
 
 		}).returning()

@@ -1,3 +1,4 @@
+import PasswordSignIn from '@/components/password-signin';
 import SignIn from '@/components/sign-in';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { auth } from '@/lib/auth';
@@ -16,15 +17,14 @@ export default async function Login() {
 			<div className="flex justify-center items-center h-full">
 				<Tabs defaultValue="email" className="w-[500px]">
 					<TabsList>
-						<TabsTrigger value="email">Using Email</TabsTrigger>
-						{/* <TabsTrigger value="oen">Using OEN Number</TabsTrigger> */}
+						<TabsTrigger value="email">Using Magic Link</TabsTrigger>
+						<TabsTrigger value="pass">Using Password</TabsTrigger>
 					</TabsList>
 					<TabsContent value="email">
 						<SignIn />
 					</TabsContent>
-					<TabsContent value="oen">
-						Not Implemented
-						{/* <SignUp /> */}
+					<TabsContent value="pass">
+						<PasswordSignIn />
 					</TabsContent>
 				</Tabs>
 			</div>
