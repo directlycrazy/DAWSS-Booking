@@ -16,7 +16,7 @@ import {
 import { toast } from "sonner";
 import Loader from "@/components/loader";
 
-export default function SeatsGrid({ userId }: { userId?: string }) {
+export default function SeatsGrid({ currentUserId, userId }: { currentUserId: string, userId?: string }) {
 	const [tables, setTables] = useState<{
 		id: number;
 		seats: {
@@ -78,7 +78,7 @@ export default function SeatsGrid({ userId }: { userId?: string }) {
 							<div className="grid grid-cols-5 gap-y-2 gap-x-2">
 								{table.seats.map((seat, i) => {
 									return (
-										<Seat id={String(seat.id)} initialBooked={seat.userId !== null && seat.userId.length > 0} selectedSeat={setSelectedSeat} key={i} existingModal={setExistingBooking} newModal={setNewBooking} />
+										<Seat id={String(seat.id)} mySeat={seat.userId === currentUserId || seat.userId === userId} initialBooked={seat.userId !== null && seat.userId.length > 0} selectedSeat={setSelectedSeat} key={i} existingModal={setExistingBooking} newModal={setNewBooking} />
 									)
 								})}
 							</div>

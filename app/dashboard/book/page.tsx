@@ -19,7 +19,7 @@ export default async function Book() {
 				<Title>Book Your Spot</Title>
 				<p className="text-muted-foreground">Click anywhere on the grid to book a spot or see who has already booked it.</p>
 			</div>
-			<SeatsGrid />
+			<SeatsGrid currentUserId={session.user.id} />
 			<Separator />
 			<div className="space-y-2">
 				<p className="text-muted-foreground">Legend</p>
