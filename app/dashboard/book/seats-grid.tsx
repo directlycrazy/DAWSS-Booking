@@ -16,7 +16,7 @@ import {
 import { toast } from "sonner";
 import Loader from "@/components/loader";
 
-export default function SeatsGrid({ currentUserId, userId }: { currentUserId: string, userId?: string }) {
+export default function SeatsGrid({ currentUserId, userId }: { currentUserId?: string, userId?: string }) {
 	const [tables, setTables] = useState<{
 		id: number;
 		seats: {
