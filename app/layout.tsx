@@ -51,7 +51,7 @@ export default async function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <NextTopLoader showSpinner={false} color="#8f8f8f" />
           <main className="md:flex h-svh items-center justify-center">
-            <Card className="overflow-hidden p-0 md:max-h-[550px] w-full md:max-w-[800px] lg:max-w-[950px]">
+            <Card className="overflow-hidden p-0 md:max-h-[650px] w-full md:max-w-[800px] lg:max-w-[1100px]">
               <CardContent className="p-0">
                 <SidebarProvider className="items-start">
                   <Sidebar admin={(session && user && user.role) || false} />
@@ -61,7 +61,7 @@ export default async function RootLayout({
                         <Breadcrumbs />
                       </div>
                     </header>
-                    <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0 m-4 md:max-h-[470px]">
+                    <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0 m-4 md:max-h-[570px]">
                       {children}
                     </div>
                   </main>

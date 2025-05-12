@@ -70,11 +70,21 @@ export default function SeatsGrid({ currentUserId, userId }: { currentUserId?: s
 
 	return (
 		<>
-			<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-2">
+			<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-2">
 				{!tables.length && <Loader />}
 				{tables.map((table, i) => {
+					if (i % 5 === 2) {
+						return (
+							<div key={i} className={`border-10 flex border-blue-200 dark:border-blue-900 ${i !== 2 && "border-t-0"} ${i !== 47 && "border-b-0"} fixed invisible lg:static lg:visible`}>
+								{i % 10 === 2 && <p className="text-center text-3xl font-black text-blue-200 dark:text-blue-900 items-center flex">
+									DANCE FLOOR
+								</p>}
+							</div>
+						)
+					}
+
 					return (
-						<Card className="p-4" key={i}>
+						<Card className="p-4 mt-1 mb-1" key={i}>
 							<div className="grid grid-cols-5 gap-y-2 gap-x-2">
 								{table.seats.map((seat, i) => {
 									return (
