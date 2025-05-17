@@ -8,7 +8,7 @@ export const user = sqliteTable("user", {
 	oen: text('oen').unique(),
 	role: integer("role", { mode: "boolean" }).default(false),
 	attending: integer("attending", { mode: "boolean" }).default(false),
-	seatId: integer("seat_id", { mode: "number" }).unique(),
+	tableId: integer("table_id", { mode: "number" }).unique(),
 	emailVerified: integer('email_verified', { mode: 'boolean' }).notNull(),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
@@ -50,34 +50,17 @@ export const verification = sqliteTable("verification", {
 	updatedAt: integer('updated_at', { mode: 'timestamp' })
 });
 
-export const seat = sqliteTable("seat", {
-	id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-	userId: text("booked_to").references(() => user.id),
-	tableId: integer("table_id", { mode: "number" }).references(() => table.id)
-})
-
 export const userReferences = relations(user, ({ one }) => ({
-	seat: one(seat, {
-		fields: [user.seatId],
-		references: [seat.id]
-	})
-}))
-
-export const seatRelations = relations(seat, ({ one }) => ({
 	table: one(table, {
-		fields: [seat.tableId],
+		fields: [user.tableId],
 		references: [table.id]
-	}),
-	user: one(user, {
-		fields: [seat.userId],
-		references: [user.id]
 	})
 }))
 
 export const table = sqliteTable("table", {
-	id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true })
+	id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
 })
 
 export const tableRelations = relations(table, ({ many }) => ({
-	seats: many(seat)
+	users: many(user)
 }))
