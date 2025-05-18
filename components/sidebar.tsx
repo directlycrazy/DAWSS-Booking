@@ -1,28 +1,32 @@
 "use client";
 
-import { Home, MapPin, Settings, ShieldHalf, TicketCheck, User } from "lucide-react"
+import { ChevronDown, Home, LayoutDashboard, MapPin, Settings, ShieldHalf, TicketCheck, User, Users } from "lucide-react"
 import {
 	Sidebar,
 	SidebarContent,
 	SidebarGroup,
 	SidebarGroupContent,
+	SidebarGroupLabel,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useState } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 
 const items = [
 	{
 		title: "Home",
-		url: "/dashboard",
+		url: "/",
 		icon: Home,
 	},
 	{
-		title: "Venue",
-		url: "/dashboard/venue",
-		icon: MapPin,
+		title: "Dashboard",
+		url: "/dashboard",
+		icon: LayoutDashboard,
 	},
 	{
 		title: "Book",
@@ -42,16 +46,17 @@ const items = [
 ]
 
 export default function AppSidebar({ admin }: { admin: boolean }) {
+	const { setOpenMobile } = useSidebar();
 	const pathname = usePathname();
 
 	return (
-		<Sidebar collapsible="none" className="hidden md:flex border-r min-h-full max-w-[200px] h-svh">
+		<Sidebar className="hidden md:flex border-r min-h-full">
 			<SidebarContent>
 				<SidebarGroup>
 					<SidebarGroupContent>
 						<SidebarMenu>
 							{items.map((item) => (
-								<SidebarMenuItem key={item.title}>
+								<SidebarMenuItem key={item.title} onClick={() => setOpenMobile(false)}>
 									<SidebarMenuButton
 										asChild
 										isActive={item.url === pathname}
@@ -64,21 +69,38 @@ export default function AppSidebar({ admin }: { admin: boolean }) {
 								</SidebarMenuItem>
 							))}
 							{admin && <>
-								<SidebarMenuItem>
-									<SidebarMenuButton
-										asChild
-										isActive={"/dashboard/admin" === pathname}
-									>
-										<Link href="/dashboard/admin">
-											<ShieldHalf />
-											<span>Admin</span>
-										</Link>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
+
 							</>}
 						</SidebarMenu>
 					</SidebarGroupContent>
 				</SidebarGroup>
+				{admin && <Collapsible defaultOpen className="group/collapsible">
+					<SidebarGroup>
+						<SidebarGroupLabel asChild>
+							<CollapsibleTrigger>
+								Admin
+								<ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+							</CollapsibleTrigger>
+						</SidebarGroupLabel>
+						<CollapsibleContent>
+							<SidebarGroupContent>
+								<SidebarMenu>
+									<SidebarMenuItem onClick={() => setOpenMobile(false)}>
+										<SidebarMenuButton
+											asChild
+											isActive={"/dashboard/admin" === pathname}
+										>
+											<Link href="/dashboard/admin">
+												<Users />
+												<span>User List</span>
+											</Link>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+								</SidebarMenu>
+							</SidebarGroupContent>
+						</CollapsibleContent>
+					</SidebarGroup>
+				</Collapsible>}
 			</SidebarContent>
 		</Sidebar>
 	)

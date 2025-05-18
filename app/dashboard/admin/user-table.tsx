@@ -34,13 +34,14 @@ import {
 import { useEffect } from "react"
 import { toast } from "sonner"
 import { redirect } from "next/navigation"
+import Link from "next/link"
 
 interface UserInt {
 	id: string,
 	name: string,
 	email: string,
 	role: boolean,
-	seatId: string,
+	tableId: string,
 	attending: boolean
 }
 
@@ -58,7 +59,7 @@ export const columns: ColumnDef<UserInt>[] = [
 				</Button>
 			)
 		},
-		cell: ({ row }) => <div>{row.getValue("name")}</div>,
+		cell: ({ row }) => <div><b>{row.getValue("name")}</b></div>,
 	},
 	{
 		accessorKey: "id",
@@ -69,6 +70,25 @@ export const columns: ColumnDef<UserInt>[] = [
 		accessorKey: "email",
 		header: "Email",
 		cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+	},
+	{
+		accessorKey: "tableId",
+		header: ({ column }) => {
+			return (
+				<Button
+					variant="ghost"
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+					className="-ml-3"
+				>
+					Table Number
+					<ArrowUpDown />
+				</Button>
+			)
+		},
+		cell: ({ row }) => {
+			const tableId = row.original.tableId
+			return tableId ? <Link href={`/dashboard/book?table=${tableId}`} className="underline font-bold">{tableId}</Link> : <div>None</div>
+		},
 	},
 	{
 		accessorKey: "attending",
@@ -90,7 +110,7 @@ export const columns: ColumnDef<UserInt>[] = [
 		header: "Booked",
 		cell: ({ row }) => (
 			<Checkbox
-				checked={row.original.seatId !== null}
+				checked={row.original.tableId !== null}
 				onCheckedChange={(value) => row.toggleSelected(!!value)}
 				aria-label="Select row"
 			/>
@@ -109,14 +129,19 @@ export const columns: ColumnDef<UserInt>[] = [
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
+						<DropdownMenuItem onClick={() => {
+							if (row.original.tableId) redirect(`/dashboard/book?table=${row.original.tableId}`);
+						}}>
+							Show Table
+						</DropdownMenuItem>
 						<DropdownMenuItem onClick={async () => {
 							const res = await fetch(`/api/admin/removebooking/${row.original.id}`);
 							if (res.ok && res.status === 200) {
 								toast.success("Successfully removed booking.");
 								window.location.reload();
 							}
-						}}>Remove Existing Booking</DropdownMenuItem>
-						<DropdownMenuItem onClick={() => redirect(`/dashboard/admin/set/${row.original.id}`)}>Manually Set New Booking</DropdownMenuItem>
+						}}>Remove Selection</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => redirect(`/dashboard/admin/set/${row.original.id}`)}>Change Table</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			)
@@ -151,6 +176,12 @@ export default function UserTable() {
 			columnVisibility,
 			rowSelection,
 		},
+		initialState: {
+			pagination: {
+				pageIndex: 0,
+				pageSize: 15
+			}
+		}
 	})
 
 	const getUsers = async () => {
@@ -164,7 +195,7 @@ export default function UserTable() {
 	}, [])
 
 	return (
-		<div className="w-full -mt-6">
+		<div className="w-full -mt-2">
 			<div className="flex items-center py-4">
 				<Input
 					placeholder="Filter users..."

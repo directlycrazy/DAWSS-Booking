@@ -33,7 +33,7 @@ export default function Login() {
 							if (!email.endsWith("@ddsbstudent.ca") && !email.endsWith("@ddsb.ca")) {
 								return toast.error("Please enter a valid email ending in @ddsb.ca or @ddsbstudent.ca.");
 							}
-							await signIn.magicLink({ email }, {
+							await signIn.magicLink({ email, callbackURL: "/dashboard" }, {
 								onRequest: () => {
 									setLoading(true);
 								},

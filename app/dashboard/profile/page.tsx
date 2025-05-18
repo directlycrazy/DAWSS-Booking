@@ -1,4 +1,4 @@
-import Title from "@/components/title";
+import Title, { Subtitle } from "@/components/title";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -9,12 +9,14 @@ export default async function Profile() {
 		headers: await headers()
 	})
 
-	if (!session) return redirect("/");
+	if (!session) return redirect("/login");
 
 	return (
 		<>
-			<Title>{session.user.email}</Title>
-			<p className="text-sm text-foreground-muted">Your email is {session.user.emailVerified ? "verified" : "not verified"}.</p>
+			<div>
+				<Title>{session.user.email}</Title>
+				<Subtitle>Your email is {session.user.emailVerified ? "verified" : "not verified"}.</Subtitle>
+			</div>
 			<div>
 				<SignOut />
 			</div>

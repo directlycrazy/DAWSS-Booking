@@ -15,6 +15,13 @@
       "when": 1747439810099,
       "tag": "0001_loose_la_nuit",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1747532690921,
+      "tag": "0002_slim_hardball",
+      "breakpoints": true
     }
   ]
 }

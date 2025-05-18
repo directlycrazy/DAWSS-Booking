@@ -13,18 +13,18 @@ export default async function Student() {
 		headers: await headers()
 	})
 
-	if (!session) return redirect("/");
+	if (!session) return redirect("/login");
 
 	const booked = await db.query.user.findFirst({
 		where: (user, { eq }) => (eq(user.id, session.user.id)),
 		with: {
-			seat: true
+			table: true
 		}
 	});
 
-	if (!booked) return redirect("/");
+	if (!booked) return redirect("/login");
 
-	const submitted = booked?.seatId;
+	const submitted = booked?.tableId;
 
 	return (
 		<>
@@ -37,7 +37,7 @@ export default async function Student() {
 				</AlertDescription>
 			</Alert>
 
-			<div className="flex flex-col md:flex-row w-full gap-y-2 md:gap-y-0 md:gap-x-2">
+			<div className="flex flex-col lg:flex-row w-full gap-y-2 lg:gap-y-0 lg:gap-x-2">
 				<Link href="/dashboard/book" className="w-full">
 					<Card className="gap-0">
 						<CardContent>
@@ -47,18 +47,6 @@ export default async function Student() {
 						</CardContent>
 					</Card>
 				</Link>
-				<Link href="/dashboard/venue" className="w-full">
-					<Card className="gap-0">
-						<CardContent>
-							<MapPin className="w-10 h-10" />
-							<h1 className="text-lg font-bold">Venue Details</h1>
-							<p className="text-sm text-muted-foreground">Tap to learn more about the venue.</p>
-						</CardContent>
-					</Card>
-				</Link>
-			</div>
-
-			<div className="flex flex-col md:flex-row w-full gap-y-2 md:gap-y-0 md:gap-x-2">
 				<Link href="/dashboard/profile" className="w-full">
 					<Card className="gap-0">
 						<CardContent>
@@ -77,10 +65,7 @@ export default async function Student() {
 						</CardContent>
 					</Card>
 				</Link>
-			</div>
-
-			{booked.role && <div className="flex flex-col md:flex-row w-full gap-y-2 md:gap-y-0 md:gap-x-2">
-				<Link href="/dashboard/admin" className="w-full">
+				{booked.role && <Link href="/dashboard/admin" className="w-full">
 					<Card className="gap-0">
 						<CardContent>
 							<ShieldHalf className="w-10 h-10" />
@@ -88,8 +73,8 @@ export default async function Student() {
 							<p className="text-sm text-muted-foreground">Tap to administrate the application.</p>
 						</CardContent>
 					</Card>
-				</Link>
-			</div>}
+				</Link>}
+			</div>
 		</>
 	)
 }

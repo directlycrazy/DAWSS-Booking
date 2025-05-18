@@ -1,4 +1,4 @@
-import Title from "@/components/title";
+import Title, { Subtitle } from "@/components/title";
 import { db } from "@/drizzle/db";
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
@@ -10,18 +10,20 @@ export default async function Admin() {
 		headers: await headers()
 	});
 
-	if (!session) return redirect("/");
+	if (!session) return redirect("/login");
 
 	const user = await db.query.user.findFirst({
 		where: (s, { eq }) => (eq(s.id, session?.user.id || "")),
 	})
 
-	if (!user || !user.role) return redirect("/");
+	if (!user || !user.role) return redirect("/login");
 
 	return (
 		<>
-			<Title>Admin</Title>
-			<p className="-mt-4 text-sm">Tick &quot;attending&quot; to allow the user to book a seat. Use the actions on the right side to remove a user&apos;s booking, or set it for them.</p>
+			<div>
+				<Title>User List</Title>
+				<Subtitle>Tick &quot;attending&quot; to allow the user to book a seat. Use the actions on the right side to remove a user&apos;s booking, or set it for them.</Subtitle>
+			</div>
 			<UserTable />
 		</>
 	)

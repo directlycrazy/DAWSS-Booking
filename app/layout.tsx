@@ -4,7 +4,7 @@ import "./globals.css";
 import { Toaster } from '@/components/ui/sonner';
 import { Card, CardContent } from "@/components/ui/card";
 import Sidebar from "@/components/sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import NextTopLoader from 'nextjs-toploader';
 import { ThemeProvider } from "@/components/theme-provider"
 import Breadcrumbs from "@/components/breadcrumbs";
@@ -49,26 +49,25 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} font-[family-name:var(--font-geist-sans)] antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <NextTopLoader showSpinner={false} color="#8f8f8f" />
-          <main className="md:flex h-svh items-center justify-center">
-            <Card className="overflow-hidden p-0 md:max-h-[650px] w-full md:max-w-[800px] lg:max-w-[1100px]">
-              <CardContent className="p-0">
-                <SidebarProvider className="items-start">
-                  <Sidebar admin={(session && user && user.role) || false} />
-                  <main className="flex flex-1 flex-col overflow-hidden">
-                    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b">
-                      <div className="flex items-center gap-2 px-4">
-                        <Breadcrumbs />
-                      </div>
-                    </header>
-                    <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0 m-4 md:max-h-[570px]">
-                      {children}
-                    </div>
-                  </main>
-                </SidebarProvider>
-              </CardContent>
-            </Card>
-          </main>
+          <NextTopLoader showSpinner={false} color="var(--primary)" />
+          {/* <Card className="overflow-hidden p-0 md:max-h-[650px] w-full md:max-w-[800px] lg:max-w-[1100px]"> */}
+          {/* <CardContent className="p-0"> */}
+          <SidebarProvider>
+            <Sidebar admin={(session && user && user.role) || false} />
+            <div className="w-full">
+              <header className="flex h-16 z-[50] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b bg-sidebar">
+                <div className="flex items-center gap-2 px-4">
+                  <SidebarTrigger />
+                  <Breadcrumbs />
+                </div>
+              </header>
+              <main className="p-2 m-2 md:m-6 space-y-2">
+                {children}
+              </main>
+            </div>
+          </SidebarProvider>
+          {/* </CardContent>
+            </Card> */}
           <Toaster />
         </ThemeProvider>
       </body>

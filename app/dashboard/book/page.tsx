@@ -1,31 +1,65 @@
-import Title from "@/components/title";
-import { Seat } from "./seat";
-import { Separator } from "@/components/ui/separator";
 import SeatsGrid from "./seats-grid";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { db } from "@/drizzle/db";
 
 export default async function Book() {
 	const session = await auth.api.getSession({
 		headers: await headers()
 	})
 
-	if (!session) return redirect("/");
+	if (!session) return redirect("/login");
+
+	const currentUserWithTable = await db.query.user.findFirst({
+		where: (user, { eq }) => eq(user.id, session.user.id),
+		with: {
+			table: {
+				with: {
+					users: {
+						columns: {
+							id: true,
+							name: true,
+							email: true,
+							role: true,
+							attending: true,
+							tableId: true,
+						}
+					}
+				}
+			}
+		}
+	})
+
+	let initialTableData = null;
+	if(currentUserWithTable && currentUserWithTable.table && currentUserWithTable.table.users) {
+		initialTableData = {
+			id: currentUserWithTable.table.id,
+			users: currentUserWithTable.table.users.map(user => ({ 
+				id: user.id, 
+				name: user.name,
+				email: user.email,
+				role: user.role ?? false,
+				attending: user.attending ?? false,
+				tableId: user.tableId === null ? undefined : user.tableId,
+			}))
+		}
+	}
+	else if (currentUserWithTable && currentUserWithTable.table) {
+		initialTableData = {
+			id: currentUserWithTable.table.id,
+			users: []
+		}
+	}
+
+	console.log(currentUserWithTable)
 
 	return (
-		<>
-			<div>
-				<Title>Book Your Spot</Title>
-				<p className="text-muted-foreground">Click anywhere on the grid to book a spot or see who has already booked it.</p>
-			</div>
-			<SeatsGrid currentUserId={session.user.id} />
-			<Separator />
-			<div className="space-y-2">
-				<p className="text-muted-foreground">Legend</p>
-				<p className="items-center flex gap-x-2 text-sm text-muted-foreground"><Seat initialBooked={false} /> <span>indicates an <b>available spot</b>.</span></p>
-				<p className="items-center flex gap-x-2 text-sm text-muted-foreground"><Seat initialBooked={true} /> <span>indicates a <b>taken spot</b>.</span></p>
-			</div>
-		</>
+		<div className="-m-4 -p-4 ">
+			<SeatsGrid
+				currentUserId={session.user.id}
+				initialTableData={initialTableData}
+				currentUserTableId={currentUserWithTable?.tableId}></SeatsGrid>
+		</div>
 	)
 }

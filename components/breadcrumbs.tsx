@@ -13,6 +13,10 @@ export default function Breadcrumbs() {
 		<>
 			<Breadcrumb>
 				<BreadcrumbList>
+					<BreadcrumbLink href="/">
+						Grad Social {new Date().getFullYear()}
+					</BreadcrumbLink>
+					{split[0] !== "" && <BreadcrumbSeparator />}
 					{split.map((a, i) => {
 						const readable = a.slice(0, 1).toUpperCase() + a.slice(1, 1000);
 

@@ -2,20 +2,16 @@ import { db } from "@/drizzle/db";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
-export const GET = async (request: Request, { params }: { params: Promise<{ seat: string }> }) => {
+export const GET = async () => {
 	const session = await auth.api.getSession({
 		headers: await headers()
 	})
 
 	if (!session?.user.id) return new Response("You are not signed in.", { status: 400 });
 
-	const { seat } = await params;
-	console.log(seat);
-
-	const existing = await db.query.seat.findFirst({
-		where: (s, { eq }) => (eq(s.id, Number(seat))),
+	const tables = await db.query.table.findMany({
 		with: {
-			user: {
+			users: {
 				columns: {
 					name: true
 				}
@@ -23,9 +19,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ seat
 		}
 	})
 
-	console.log(existing);
-
-	return new Response(JSON.stringify(existing), {
+	return new Response(JSON.stringify(tables), {
 		status: 200, headers: {
 			"content-type": "application/json"
 		}

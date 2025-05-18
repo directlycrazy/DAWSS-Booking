@@ -18,9 +18,9 @@ export const GET = async () => {
 	if (!user.role) return new Response("You are not signed in.", { status: 400 });
 
 	const users = await db.query.user.findMany({
-		// with: {
-		// 	seats: true
-		// }
+		with: {
+			table: true
+		}
 	})
 
 	return new Response(JSON.stringify(users), {

@@ -2,7 +2,7 @@ import { db } from "@/drizzle/db";
 import { auth } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
-import { user as userSchema, seat as seatSchema } from '@/drizzle/schema';
+import { user as userSchema, table as tableSchema } from '@/drizzle/schema';
 
 export const GET = async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
 	const session = await auth.api.getSession({
@@ -25,10 +25,10 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
 	})
 
 	if (!updatedUser) return;
-	if (!updatedUser.seatId) return;
+	if (!updatedUser.tableId) return;
 
-	await db.update(seatSchema).set({ userId: null }).where(eq(seatSchema.id, updatedUser.seatId));
-	await db.update(userSchema).set({ seatId: null }).where(eq(userSchema.id, id));
+	// await db.update(seatSchema).set({ userId: null }).where(eq(seatSchema.id, updatedUser.seatId));
+	await db.update(userSchema).set({ tableId: null }).where(eq(userSchema.id, id));
 
 	return new Response("Success", {
 		status: 200
