@@ -97,6 +97,7 @@ export default async function Book() {
 				currentUserHasGuest={currentUserData.hasGuest ?? false} 
 				initialTableData={initialTableData}
 				currentUserTableId={currentUserData.tableId}
+				currentUserRole={currentUserData.role ?? false}
 			/>
 		</div>
 	);

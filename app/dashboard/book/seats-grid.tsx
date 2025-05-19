@@ -22,6 +22,7 @@ import Title, { Subtitle } from "@/components/title";
 import { Separator } from "@/components/ui/separator";
 import Table from './table'; 
 import { XIcon } from "lucide-react"; 
+import { admin } from "better-auth/plugins";
 
 interface UserType {
 	id: string;
@@ -45,6 +46,7 @@ interface SeatsGridProps {
 	userId?: string;
 	initialTableData?: TableType | null;
 	currentUserTableId?: number | null;
+	currentUserRole?: boolean;
 }
 
 
@@ -52,7 +54,7 @@ const TABLE_CAPACITY = 10;
 
 export default function SeatsGrid(
 	{ 
-		currentUserId, currentUserHasGuest, userId, initialTableData, currentUserTableId
+		currentUserId, currentUserHasGuest, userId, initialTableData, currentUserTableId, currentUserRole
 	}: SeatsGridProps) { 
 	const [tables, setTables] = useState<TableType[]>([]);
 	const [selectedTable, setSelectedTable] = useState(""); 
@@ -64,9 +66,10 @@ export default function SeatsGrid(
 	const [clickedTableDetails, setClickedTableDetails] = useState<TableType | null>(null);
 	const [sidebarVisible, setSidebarVisible] = useState(false);
 
+	const userBeingBooked = tables.flatMap(t => t.users).find(u => u.id === userId);
+
 	const getSpotsNeededForBookingUser = () => {
 		if(userId && userId !== currentUserId) {
-			const userBeingBooked = tables.flatMap(t => t.users).find(u => u.id === userId);
 			if(userBeingBooked) {
 				return userBeingBooked.hasGuest ? 2 : 1;
 			}
@@ -157,7 +160,8 @@ export default function SeatsGrid(
 
 	const handleTableClick = async (table: TableType) => {
 		const currentSimpleOccupancy = table.users ? table.users.length : 0;
-		if (currentSimpleOccupancy >= 10) {
+		if (currentSimpleOccupancy >= 10 && table.id !== currentUserTableId && !currentUserRole) {
+			console.log(currentUserRole)
 		toast.info(`Table ${table.id} is full and cannot be selected for booking directly.`);
 		return;
 		}
