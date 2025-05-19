@@ -23,6 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import Table from './table'; 
 import { XIcon } from "lucide-react"; 
 import { admin } from "better-auth/plugins";
+import { useSearchParams } from "next/navigation";
 
 interface UserType {
 	id: string;
@@ -67,6 +68,9 @@ export default function SeatsGrid(
 	const [sidebarVisible, setSidebarVisible] = useState(false);
 
 	const userBeingBooked = tables.flatMap(t => t.users).find(u => u.id === userId);
+
+	const searchParams = useSearchParams();
+	const tableParam = searchParams.get("table");
 
 	const getSpotsNeededForBookingUser = () => {
 		if(userId && userId !== currentUserId) {
@@ -124,7 +128,9 @@ export default function SeatsGrid(
 		const tableInterval = setInterval(getNewTables, 2 * 60 * 1000);
 		getNewTables();
 
-		if (myTable) { 
+		if (tableParam) {  // `book?table=x` takes priority
+			setTable(tableParam);
+		} else if (myTable) { 
 			setTable(myTable.toString()); 
 		} else if (initialTableData?.id) { 
             setTable(initialTableData.id.toString());
