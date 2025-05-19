@@ -27,7 +27,7 @@ export default async function Student() {
 	const submitted = booked?.tableId;
 
 	return (
-		<>
+		<div className="space-y-2">
 			<Title>Welcome, {session.user.name}.</Title>
 			<Alert variant="default">
 				<Info className="h-4 w-4" />
@@ -75,6 +75,6 @@ export default async function Student() {
 					</Card>
 				</Link>}
 			</div>
-		</>
+		</div>
 	)
 }
