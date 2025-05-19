@@ -199,8 +199,8 @@ export default function SeatsGrid(
 
 	return (
 		<>
-			<div className="lg:grid grid-cols-12 h-svh"> {/* Main layout grid */}
-				<div className="col-span-10 m-4">
+			<div className="lg:grid grid-cols-12"> {/* Main layout grid */}
+				<div className="col-span-10 lg:m-6">
 					<div>
 						<Title>Book Your Table</Title>
 						<Subtitle>
@@ -260,7 +260,7 @@ export default function SeatsGrid(
 				</div>
 
 				{/* Sidebar */}
-				<div className={`border-l p-4 w-full col-span-2 fixed inset-y-0 right-0 lg:static overflow-y-auto bg-card z-20 lg:z-auto transform transition-transform duration-300 ease-in-out ${sidebarVisible ? "translate-x-0" : "translate-x-full"} lg:translate-x-0`}
+				<div className={`min-h-svh border-l p-4 w-full col-span-2 fixed inset-y-0 right-0 lg:static overflow-y-auto bg-card z-20 lg:z-auto transform transition-transform duration-300 ease-in-out ${sidebarVisible ? "translate-x-0" : "translate-x-full"} lg:translate-x-0`}
 				>
 					{selectedTableInfo ? (
 						<>

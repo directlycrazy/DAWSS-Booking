@@ -91,7 +91,7 @@ export default async function Book() {
 	}
 	
 	return (
-		<div className="-m-4 -p-4 "> 
+		<div className="md:-m-6 p-0"> 
 			<SeatsGrid
 				currentUserId={session.user.id}
 				currentUserHasGuest={currentUserData.hasGuest ?? false} 

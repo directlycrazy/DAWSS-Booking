@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from '@/components/ui/sonner';
-import { Card, CardContent } from "@/components/ui/card";
 import Sidebar from "@/components/sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import NextTopLoader from 'nextjs-toploader';
@@ -61,8 +60,10 @@ export default async function RootLayout({
                   <Breadcrumbs />
                 </div>
               </header>
-              <main className="p-2 m-2 md:m-6 space-y-2">
-                {children}
+              <main className="m-4 md:m-6">
+                <div>
+                  {children}
+                </div>
               </main>
             </div>
           </SidebarProvider>
