@@ -41,8 +41,9 @@ interface UserInt {
 	name: string,
 	email: string,
 	role: boolean,
-	tableId: string,
+	tableId: string | null,
 	attending: boolean
+	hasGuest?: boolean
 }
 
 export const columns: ColumnDef<UserInt>[] = [
@@ -102,6 +103,31 @@ export const columns: ColumnDef<UserInt>[] = [
 					row.toggleSelected(!value)
 				}}
 				aria-label="Select row"
+			/>
+		),
+	},
+	{
+		accessorKey: "hasGuest",
+		header: "Has Guest",
+		cell: ({ row }) => (
+			<Checkbox
+				defaultChecked={row.original.hasGuest || false} 
+				onCheckedChange={async () => { 
+					try {
+						const req = await fetch(`/api/admin/hasguest/${row.original.id}`);
+						if (req.ok) {
+							const resJson = await req.json();
+							toast.success(resJson.message || "Successfully updated guest status.");
+						} else {
+							const errorText = await req.text();
+							toast.error(`Failed to update guest status: ${errorText}`);
+						}
+					} catch (error) {
+						toast.error("An error occurred while updating guest status.");
+						console.error(error);
+					}
+				}}
+				aria-label="Toggle has guest status"
 			/>
 		),
 	},

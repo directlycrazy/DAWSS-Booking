@@ -14,31 +14,14 @@ import {
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-	SheetClose,
-	SheetFooter,
-} from "@/components/ui/sheet"
-
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarFooter,
-	SidebarGroup,
-	SidebarHeader,
-} from "@/components/ui/sidebar"
 
 import { toast } from "sonner";
 import Loader from "@/components/loader";
 import { Button } from "@/components/ui/button";
 import Title, { Subtitle } from "@/components/title";
 import { Separator } from "@/components/ui/separator";
-import Table from './table';
+import Table from './table'; 
+import { XIcon } from "lucide-react"; 
 
 interface UserType {
 	id: string;
@@ -48,6 +31,7 @@ interface UserType {
 	seatId?: number;
 	tableId?: number;
 	attending: boolean;
+	hasGuest: boolean;
 }
 
 interface TableType {
@@ -55,110 +39,177 @@ interface TableType {
 	users: UserType[]
 }
 
-interface TableDisplayType {
-	id: number;
-	users?: UserType[]
+interface SeatsGridProps {
+	currentUserId?: string;
+	currentUserHasGuest: boolean;
+	userId?: string;
+	initialTableData?: TableType | null;
+	currentUserTableId?: number | null;
 }
 
-type TableInfoType = any;
+
+const TABLE_CAPACITY = 10; 
 
 export default function SeatsGrid(
-	{
-		currentUserId, userId, initialTableData, currentUserTableId
-	}: {
-		currentUserId?: string;
-		userId?: string;
-		initialTableData?: TableType | null;
-		currentUserTableId?: number | null;
-	}) {
+	{ 
+		currentUserId, currentUserHasGuest, userId, initialTableData, currentUserTableId
+	}: SeatsGridProps) { 
 	const [tables, setTables] = useState<TableType[]>([]);
-	const [selectedTable, setSelectedTable] = useState("");
-	const [selectedTableInfo, setTableInfo] = useState<TableInfoType | null>(null);
-	const [myTable, setMyTable] = useState(currentUserTableId || "");
+	const [selectedTable, setSelectedTable] = useState(""); 
+	const [selectedTableInfo, setTableInfo] = useState<TableType | null>(null); 
+	const [myTable, setMyTable] = useState<string | number>(currentUserTableId || ""); 
 
 	const [existingBooking, setExistingBooking] = useState(false);
-	const [newBooking, setNewBooking] = useState(false);
+	const [newBooking, setNewBooking] = useState(false); 
 	const [clickedTableDetails, setClickedTableDetails] = useState<TableType | null>(null);
 	const [sidebarVisible, setSidebarVisible] = useState(false);
+
+	const getSpotsNeededForBookingUser = () => {
+		if(userId && userId !== currentUserId) {
+			const userBeingBooked = tables.flatMap(t => t.users).find(u => u.id === userId);
+			if(userBeingBooked) {
+				return userBeingBooked.hasGuest ? 2 : 1;
+			}
+			return 1; 
+		}
+		return currentUserHasGuest ? 2 : 1;
+	};
+
+	const calculateEffectiveOccupancy = (tableUsers: UserType[] | undefined): number => {
+		if (!tableUsers) return 0;
+		return tableUsers.reduce((acc, user) => acc + (user.hasGuest ? 2 : 1), 0);
+	};
 
 	const bookSpot = async (overwrite: boolean) => {
 		if (overwrite && userId) {
 			await fetch(`/api/admin/removebooking/${userId}`);
 			toast.info("Successfully overwritten.");
 		}
+		if (!selectedTable) {
+			toast.error("No table selected.");
+			setNewBooking(false); 
+			return;
+		}
 		const res = await fetch(`/api/book/${selectedTable}${userId ? `?user=${userId}` : ""}`);
 		const text = await res.text();
-		toast.info(text);
-		getNewTables();
-		setTable(selectedTable);
-		//Mark table as booked by the user
-		setMyTable(selectedTable);
-	}
+		
+		if (res.ok) {
+			toast.success(text || "Successfully booked."); 
+			getNewTables(); 
+			setTable(selectedTable); 
+			setMyTable(selectedTable); 
+		} else {
+			toast.error(text || "Booking failed.");
+		}
+		setNewBooking(false); 
+	};
 
 	const getNewTables = async () => {
 		const res = await fetch(`/api/listtables`);
-		const json = await res.json();
+		if (!res.ok) {
+			toast.error("Failed to load tables.");
+			return;
+		}
+		const json: TableType[] = await res.json();
 		setTables(json);
-	}
+	};
 
 	useEffect(() => {
-		// if (existingBooking === true) getSeatInfo();
-	}, [existingBooking])
+	}, [existingBooking]);
 
 	useEffect(() => {
 		const tableInterval = setInterval(getNewTables, 2 * 60 * 1000);
-
 		getNewTables();
 
-		if (myTable) {
-			setTable(myTable);
-		}
+		if (myTable) { 
+			setTable(myTable.toString()); 
+		} else if (initialTableData?.id) { 
+            setTable(initialTableData.id.toString());
+        }
+
 
 		return () => {
 			clearInterval(tableInterval);
 		}
-	}, []);
+	}, []); 
 
-	const setTable = async (id: string) => {
-		setSelectedTable(id);
-		const res = await fetch(`/api/tableinfo/${id}`);
-		const tableData: TableInfoType = await res.json();
-		setTableInfo(tableData);
-		handleSheetOpenChange(true);
-	}
+	const setTable = async (id: string | number) => { 
+		const idStr = id.toString();
+		setSelectedTable(idStr); 
+		if (!idStr) { 
+			setTableInfo(null);
+			return;
+		}
+		try {
+			const res = await fetch(`/api/tableinfo/${idStr}`);
+			if (!res.ok) {
+				toast.error(`Failed to load info for table ${idStr}.`);
+				setTableInfo(null);
+				return;
+			}
+			const tableData: TableType = await res.json(); 
+			setTableInfo(tableData);
+		} catch (error) {
+			console.error("Error in setTable:", error);
+			setTableInfo(null);
+		}
+	};
 
 	const handleTableClick = async (table: TableType) => {
+		const currentSimpleOccupancy = table.users ? table.users.length : 0;
+		if (currentSimpleOccupancy >= 10) {
+		toast.info(`Table ${table.id} is full and cannot be selected for booking directly.`);
+		return;
+		}
+
 		try {
-			if (selectedTable === table.id) {
-				setTable(myTable);
-			} else {
-				setTable(table.id);
-			}
+
+			setTable(table.id.toString());
 		}
 		catch (error) {
 			console.error("Error fetching table info:", error);
-			handleSheetOpenChange(false);
+			setTableInfo(null); 
 		}
-	}
+	};
 
-	const handleSheetOpenChange = (isOpen: boolean) => {
-		if (!isOpen) {
-			setSidebarVisible(false);
-			// } else if (selectedTableInfo.users?.length < 10) {
-		} else {
-			setSidebarVisible(true);
-		}
-	}
 
-	console.log(currentUserId)
+	//  Variables needed for the sidebar's guest logic 
+	const spotsNeededByCurrentUser = getSpotsNeededForBookingUser();
+	const currentSelectedTableOccupancy = selectedTableInfo?.users ? calculateEffectiveOccupancy(selectedTableInfo.users) : 0;
+	const spotsAvailableOnSelectedTable = TABLE_CAPACITY - currentSelectedTableOccupancy;
+	const myBookedTableIdAsNumber = typeof myTable === 'string' ? parseInt(myTable, 10) : myTable;
+	const selectedTableInfoIdAsNumber = selectedTableInfo?.id ? Number(selectedTableInfo.id) : null;
+	const canBookSelectedTable = selectedTableInfo && 
+	                             (spotsAvailableOnSelectedTable >= spotsNeededByCurrentUser);
+
+
+	const renderTableUsersWithGuests = (users: UserType[] | undefined) => {
+		if (!users) return null;
+		const displayList: { name: string, isGuest: boolean, id: string }[] = [];
+		users.forEach(user => {
+			displayList.push({ name: user.name, isGuest: false, id: `user-${user.id}` });
+			if (user.hasGuest) {
+				displayList.push({ name: `${user.name}'s Guest`, isGuest: true, id: `guest-${user.id}` });
+			}
+		});
+		return displayList.map((item) => (
+			<li key={item.id} className={item.isGuest ? "italic text-muted-foreground ml-2" : ""}>
+				{item.name}
+			</li>
+		));
+	};
+
 
 	return (
 		<>
-			<div className="lg:grid grid-cols-12 h-svh">
+			<div className="lg:grid grid-cols-12 h-svh"> {/* Main layout grid */}
 				<div className="col-span-10 m-4">
 					<div>
 						<Title>Book Your Table</Title>
-						<Subtitle>Click anywhere on the grid to book a spot or see who has already booked it.</Subtitle>
+						<Subtitle>
+                            Click a table to view its members or to book your spot.
+                            {currentUserHasGuest && " You will be booking for yourself and one guest (2 spots total)."}
+                        </Subtitle>
 					</div>
 					<Separator className="my-4" />
 					<div className="md:flex gap-x-2">
@@ -166,8 +217,18 @@ export default function SeatsGrid(
 						{tables.length > 0 && <>
 							<div className="grid grid-cols-6 gap-x-2 gap-y-2 w-full">
 								{tables.slice(0, 25).map((table: TableType, i) => {
+                                    const effectiveOccupancy = calculateEffectiveOccupancy(table.users);
+                                    const isFull = effectiveOccupancy >= TABLE_CAPACITY;
+                                    let tableColor: "default" | "full" | "selected" | "booked" = "default";
+                                    if (selectedTable === table.id.toString()) {
+                                        tableColor = "selected";
+                                    } else if (myTable.toString() === table.id.toString()) {
+                                        tableColor = "booked";
+                                    } else if (isFull) {
+                                        tableColor = "full";
+                                    }
 									return (
-										<Table key={i} color={Number(selectedTable) === table.id ? "selected" : (table.users.length >= 10 ? "full" : (table.id === Number(myTable) ? "booked" : "default"))} table={table} click={handleTableClick} />
+										<Table key={i} color={tableColor} table={table} click={handleTableClick} />
 									)
 								})}
 							</div>
@@ -176,9 +237,18 @@ export default function SeatsGrid(
 							</div>
 							<div className="grid grid-cols-6 gap-x-2 gap-y-2 w-full">
 								{tables.slice(25, 100).map((table: TableType, i) => {
-									console.log(selectedTable, table.id)
+                                    const effectiveOccupancy = calculateEffectiveOccupancy(table.users);
+                                    const isFull = effectiveOccupancy >= TABLE_CAPACITY;
+                                    let tableColor: "default" | "full" | "selected" | "booked" = "default";
+                                    if (selectedTable === table.id.toString()) {
+                                        tableColor = "selected";
+                                    } else if (myTable.toString() === table.id.toString()) {
+                                        tableColor = "booked";
+                                    } else if (isFull) {
+                                        tableColor = "full";
+                                    }
 									return (
-										<Table key={i} color={Number(selectedTable) === table.id ? "selected" : (table.users.length >= 10 ? "full" : (table.id === Number(myTable) ? "booked" : "default"))} table={table} click={handleTableClick} />
+										<Table key={i} color={tableColor} table={table} click={handleTableClick} />
 									)
 								})}
 							</div>
@@ -188,60 +258,103 @@ export default function SeatsGrid(
 					<div className="space-y-2">
 						<p className="text-muted-foreground">Legend</p>
 						<p className="items-center flex gap-x-2 text-sm text-muted-foreground"><Seat initialBooked={false} /> <span>indicates an <b>available table</b>.</span></p>
-						<p className="items-center flex gap-x-2 text-sm text-muted-foreground"><Seat initialBooked={true} /> <span>indicates a <b>full table</b>.</span></p>
+						<p className="items-center flex gap-x-2 text-sm text-muted-foreground"><Seat initialBooked={true} /> <span>indicates a <b>full table</b> (or your booked one).</span></p>
 					</div>
 				</div>
+
 				{/* Sidebar */}
-				<div className="border-l p-4 w-full col-span-2 fixed invisible md:static md:visible">
-					{selectedTableInfo ? (
+				<div className="border-l p-4 w-full col-span-2 fixed inset-y-0 right-0 lg:static overflow-y-auto bg-card z-20 lg:z-auto transform transition-transform duration-300 ease-in-out translate-x-full lg:translate-x-0"
+                >
+					{selectedTableInfo ? ( 
 						<>
-							<h1 className="font-bold text-xl">Table {selectedTableInfo.id} Overview</h1>
+							<div className="flex justify-between items-center">
+								<h1 className="font-bold text-xl">Table {selectedTableInfo.id} Overview</h1>
+								<Button variant="ghost" size="icon" className="lg:hidden" onClick={() => {
+                                    setSelectedTable(""); 
+                                    setTableInfo(null); 
+                                }}>
+									<XIcon className="h-5 w-5" />
+								</Button>
+							</div>
 							<Separator className="my-2" />
+
+							<p className="text-sm text-muted-foreground">
+								Occupancy: {currentSelectedTableOccupancy} / {TABLE_CAPACITY}
+							</p>
+
 							{selectedTableInfo.users && selectedTableInfo.users.length > 0 ? (
 								<>
-									<h2 className="font-semibold mb-1">Students at this table:</h2>
+									<h2 className="font-semibold mb-1 mt-3">Members at this table:</h2>
 									<ul className="list-disc list-inside text-sm space-y-1">
-										{selectedTableInfo.users.map((user: UserType, i) => (
-											<li key={i}>{user.name}</li>
-										))}
+										{renderTableUsersWithGuests(selectedTableInfo.users)}
 									</ul>
 								</>
 							) : (
-								<p className="text-muted-foreground text-sm">No students currently at this table.</p>
+								<p className="text-muted-foreground text-sm mt-3">No one is currently booked at this table.</p>
 							)}
+
 							<div className="mt-4">
 								<Button
 									onClick={() => {
-										if (selectedTableInfo.id) {
-											setSelectedTable(selectedTableInfo.id.toString());
-											setNewBooking(true);
+										if (selectedTableInfo && selectedTableInfo.id) { 
+											if (canBookSelectedTable) {
+												setNewBooking(true); 
+											} else {
+												toast.error(`Not enough spots. You need ${spotsNeededByCurrentUser}, but only ${spotsAvailableOnSelectedTable} are available.`);
+											}
 										} else {
-											toast.error("Please select a valid table first.");
+											toast.error("Please select a valid table first."); 
 										}
 									}}
-									disabled={!selectedTableInfo || (selectedTableInfo.users && selectedTableInfo.users.length >= 10) || (Number(myTable) === selectedTableInfo.id)}
+									disabled={
+										!selectedTableInfo || 
+										(myBookedTableIdAsNumber === selectedTableInfoIdAsNumber) ||
+										!canBookSelectedTable 
+									}
+									className="w-full"
 								>
-									{Number(myTable) === selectedTableInfo.id ? `You're Already Booked Here.` : `Book Spot at Table ${selectedTableInfo.id}`}
+									{myBookedTableIdAsNumber === selectedTableInfoIdAsNumber ? `You're Booked Here` : `Book Spot at Table ${selectedTableInfo.id}`}
 								</Button>
-								{selectedTableInfo.users && selectedTableInfo.users.length >= 10 && (
-									<p className="text-destructive text-xs mt-1 font-bold">This table is full.</p>
+
+								{selectedTableInfo && !canBookSelectedTable && myBookedTableIdAsNumber !== selectedTableInfoIdAsNumber && (
+									<p className="text-destructive text-xs mt-1 font-bold">
+										Not enough spots for you{currentUserHasGuest ? " and your guest" : ""}. (Needs: {spotsNeededByCurrentUser}, Available: {spotsAvailableOnSelectedTable})
+									</p>
 								)}
 							</div>
 						</>
 					) : (
 						<>
-							<h1 className="font-bold text-xl">Table Overview</h1>
-							<p className="text-muted-foreground">Click on a table to see more details.</p>
+							<div className="flex justify-between items-center">
+								<h1 className="font-bold text-xl">Table Overview</h1>
+								<Button variant="ghost" size="icon" className="lg:hidden" onClick={() => {
+                                    setSelectedTable(""); 
+                                    setTableInfo(null);
+                                }}>
+									<XIcon className="h-5 w-5" />
+								</Button>
+							</div>
+							<p className="text-muted-foreground mt-2">Click on a table to see more details.</p>
 						</>
 					)}
 				</div>
 			</div>
+
 			<AlertDialog open={newBooking} onOpenChange={setNewBooking}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Would you like to book this table?</AlertDialogTitle>
 						<AlertDialogDescription>
-							This action <b>can be undone</b>. <b>If you already have a booking, it will be replaced with this one.</b> Donald A. Wilson faculty have the right to change any arrangements as they see fit.
+							This action <b>can be undone</b>.
+							{currentUserHasGuest ? 
+								` You are booking for yourself and one guest (${spotsNeededByCurrentUser} spots).` :
+								" You are booking for yourself (1 spot)."
+							}
+							{ (typeof myTable === 'string' && myTable !== "" && myTable !== selectedTable) || (typeof myTable === 'number' && myTable !== 0 && myTable !== Number(selectedTable)) ?
+								" Your previous booking will be replaced with this one." :
+								""
+							}
+							 Donald A. Wilson faculty have the right to change any arrangements as they see fit.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>

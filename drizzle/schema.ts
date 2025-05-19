@@ -8,6 +8,7 @@ export const user = sqliteTable("user", {
 	oen: text('oen').unique(),
 	role: integer("role", { mode: "boolean" }).default(false),
 	attending: integer("attending", { mode: "boolean" }).default(false),
+	hasGuest: integer("has_guest", { mode: "boolean" }).default(false),
 	tableId: integer("table_id", { mode: "number" }).references(() => table.id, { onUpdate: "cascade" }),
 	emailVerified: integer('email_verified', { mode: 'boolean' }).notNull(),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
