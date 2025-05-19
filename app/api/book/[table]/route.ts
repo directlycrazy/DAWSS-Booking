@@ -1,11 +1,11 @@
 import { db } from "@/drizzle/db";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { user as userSchema, table as tableSchema } from '@/drizzle/schema';
-import { eq, inArray } from "drizzle-orm";
+import { user as userSchema } from '@/drizzle/schema';
+import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
-const TABLE_CAPACITY = 10; 
+const TABLE_CAPACITY = 10;
 
 export const GET = async (request: NextRequest, { params }: { params: Promise<{ table: string }> }) => {
 	const session = await auth.api.getSession({
@@ -24,7 +24,7 @@ export const GET = async (request: NextRequest, { params }: { params: Promise<{ 
 		return new Response("Logged-in user not found.", { status: 401 });
 	}
 
-	if (!loggedInUser.attending && !loggedInUser.role) { 
+	if (!loggedInUser.attending && !loggedInUser.role) {
 		return new Response("You have not been marked as attending the social. Please talk to a member of faculty to be able to book.", { status: 403 });
 	}
 
@@ -65,7 +65,7 @@ export const GET = async (request: NextRequest, { params }: { params: Promise<{ 
 			users: {
 				columns: {
 					id: true,
-					hasGuest: true, 
+					hasGuest: true,
 				}
 			}
 		}
@@ -78,9 +78,9 @@ export const GET = async (request: NextRequest, { params }: { params: Promise<{ 
 	let currentOccupancy = 0;
 	if (targetTable.users) {
 		targetTable.users.forEach(user => {
-			currentOccupancy += 1; 
+			currentOccupancy += 1;
 			if (user.hasGuest) {
-				currentOccupancy += 1; 
+				currentOccupancy += 1;
 			}
 		});
 	}
@@ -97,7 +97,7 @@ export const GET = async (request: NextRequest, { params }: { params: Promise<{ 
 	if (!isAlreadyBookedAtThisTable && remainingCapacity < spotsNeeded) {
 		return new Response(
 			`This table does not have enough space. It has ${remainingCapacity} spot(s) available, but ${spotsNeeded} are needed due to your guest.`,
-			{ status: 409 } 
+			{ status: 409 }
 		);
 	}
 

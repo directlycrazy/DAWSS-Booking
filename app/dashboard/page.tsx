@@ -3,7 +3,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
 import { auth } from "@/lib/auth"
-import { Info, MapPin, Settings, ShieldHalf, TicketCheck, User } from "lucide-react";
+import { Info, Settings, ShieldHalf, TicketCheck, User } from "lucide-react";
 import { headers } from "next/headers"
 import Link from "next/link";
 import { redirect } from "next/navigation";

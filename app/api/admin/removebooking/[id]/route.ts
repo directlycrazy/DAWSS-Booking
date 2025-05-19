@@ -2,7 +2,7 @@ import { db } from "@/drizzle/db";
 import { auth } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
-import { user as userSchema, table as tableSchema } from '@/drizzle/schema';
+import { user as userSchema } from '@/drizzle/schema';
 
 export const GET = async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
 	const session = await auth.api.getSession({

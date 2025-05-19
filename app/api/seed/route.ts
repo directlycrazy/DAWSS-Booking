@@ -28,7 +28,7 @@ export const GET = async (request: NextRequest) => {
 
 	console.log(res)
 
-	return new Response("a", {
+	return new Response("Success.", {
 		status: 200, headers: {
 			"content-type": "application/json"
 		}

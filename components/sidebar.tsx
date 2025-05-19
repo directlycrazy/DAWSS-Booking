@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Home, LayoutDashboard, MapPin, Settings, ShieldHalf, TicketCheck, User, Users } from "lucide-react"
+import { ChevronDown, Home, LayoutDashboard, Settings, TicketCheck, User, Users } from "lucide-react"
 import {
 	Sidebar,
 	SidebarContent,
@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 
 const items = [

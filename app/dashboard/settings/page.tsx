@@ -2,9 +2,7 @@
 
 import Title, { Subtitle } from "@/components/title";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { useTheme } from "next-themes";
-import Link from "next/link";
 
 export default function Settings() {
 	const { theme, setTheme } = useTheme();

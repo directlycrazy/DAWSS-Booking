@@ -32,7 +32,7 @@ interface UserType {
 	hasGuest: boolean;
 }
 
-interface TableType {
+export interface TableType {
 	id: number;
 	users: UserType[]
 }
