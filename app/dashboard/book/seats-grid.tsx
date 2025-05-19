@@ -41,33 +41,29 @@ interface SeatsGridProps {
 	currentUserId?: string;
 	currentUserHasGuest: boolean;
 	userId?: string;
-	initialTableData?: TableType | null;
+	initialTableId?: number | null;
 	currentUserTableId?: number | null;
+	currentUserRole?: boolean;
 }
-
 
 const TABLE_CAPACITY = 10;
 
-export default function SeatsGrid(
-	{
-		currentUserId, currentUserHasGuest, userId, initialTableData, currentUserTableId
-	}: SeatsGridProps) {
+export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, initialTableId, currentUserTableId, currentUserRole }: SeatsGridProps) {
 	const [tables, setTables] = useState<TableType[]>([]);
 	const [selectedTable, setSelectedTable] = useState("");
 	const [selectedTableInfo, setTableInfo] = useState<TableType | null>(null);
 	const [myTable, setMyTable] = useState<string | number>(currentUserTableId || "");
 
-	const [existingBooking, setExistingBooking] = useState(false);
 	const [newBooking, setNewBooking] = useState(false);
-	const [clickedTableDetails, setClickedTableDetails] = useState<TableType | null>(null);
 	const [sidebarVisible, setSidebarVisible] = useState(false);
 
 	const searchParams = useSearchParams();
 	const tableParam = searchParams.get("table");
 
+	const userBeingBooked = tables.flatMap(t => t.users).find(u => u.id === userId);
+
 	const getSpotsNeededForBookingUser = () => {
 		if (userId && userId !== currentUserId) {
-			const userBeingBooked = tables.flatMap(t => t.users).find(u => u.id === userId);
 			if (userBeingBooked) {
 				return userBeingBooked.hasGuest ? 2 : 1;
 			}
@@ -116,20 +112,17 @@ export default function SeatsGrid(
 	};
 
 	useEffect(() => {
-	}, [existingBooking]);
-
-	useEffect(() => {
 		const tableInterval = setInterval(getNewTables, 2 * 60 * 1000);
+
 		getNewTables();
 
 		if (tableParam) { // `book?table=x` takes priority
 			setTable(tableParam);
 		} else if (myTable) {
 			setTable(myTable.toString());
-		} else if (initialTableData?.id) {
-			setTable(initialTableData.id.toString());
+		} else if (initialTableId) {
+			setTable(String(initialTableId));
 		}
-
 
 		return () => {
 			clearInterval(tableInterval);
@@ -160,7 +153,7 @@ export default function SeatsGrid(
 
 	const handleTableClick = async (table: TableType) => {
 		const currentSimpleOccupancy = table.users ? table.users.length : 0;
-		if (currentSimpleOccupancy >= 10) {
+		if (currentSimpleOccupancy >= 10 && table.id !== currentUserTableId && !currentUserRole) {
 			toast.info(`Table ${table.id} is full and cannot be selected for booking directly.`);
 			return;
 		}
@@ -176,7 +169,6 @@ export default function SeatsGrid(
 		}
 	};
 
-
 	//  Variables needed for the sidebar's guest logic 
 	const spotsNeededByCurrentUser = getSpotsNeededForBookingUser();
 	const currentSelectedTableOccupancy = selectedTableInfo?.users ? calculateEffectiveOccupancy(selectedTableInfo.users) : 0;
@@ -184,7 +176,6 @@ export default function SeatsGrid(
 	const myBookedTableIdAsNumber = typeof myTable === 'string' ? parseInt(myTable, 10) : myTable;
 	const selectedTableInfoIdAsNumber = selectedTableInfo?.id ? Number(selectedTableInfo.id) : null;
 	const canBookSelectedTable = selectedTableInfo && (spotsAvailableOnSelectedTable >= spotsNeededByCurrentUser);
-
 
 	const renderTableUsersWithGuests = (users: UserType[] | undefined) => {
 		if (!users) return null;
@@ -201,7 +192,6 @@ export default function SeatsGrid(
 			</li>
 		));
 	};
-
 
 	return (
 		<>
