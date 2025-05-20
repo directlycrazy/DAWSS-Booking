@@ -170,7 +170,7 @@ export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, 
 					</div>
 					<div className="p-4 outline rounded-lg flex my-2 md:my-0">
 						<h1 className="text-center font-black invisible fixed md:visible md:static justify-center text-2xl tracking-tight" style={{ writingMode: "vertical-rl" }}>Dance Floor</h1>
-						<h1 className="text-center font-black visible static md:fixed md:invisible tracking-tight">Dance Floor</h1>
+						<h1 className="text-center font-black visible static md:fixed md:invisible tracking-tight mx-auto">Dance Floor</h1>
 					</div>
 					<div className="grid grid-cols-5 gap-x-2 gap-y-2 w-full">
 						{tables.slice(25, 100).map((table: TableType, i) => {

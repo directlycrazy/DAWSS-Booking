@@ -372,14 +372,14 @@ export default function UserTable() {
 
     return (
         <div className="w-full -mt-2">
-            <div className="flex items-center py-4">
+            <div className="flex overflow-x-auto items-center py-4 gap-x-2">
                 <Input
                     placeholder="Filter users..."
                     value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
                         table.getColumn("name")?.setFilterValue(event.target.value)
                     }
-                    className="max-w-sm"
+                    className="min-w-xs max-w-sm"
                 />
                 <div className="ml-auto flex items-center gap-2">
                     <Dialog open={showAddUserDialog} onOpenChange={setShowAddUserDialog}>
