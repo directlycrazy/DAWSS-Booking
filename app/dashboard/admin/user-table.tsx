@@ -97,10 +97,9 @@ export const columns: ColumnDef<UserInt>[] = [
 		cell: ({ row }) => (
 			<Checkbox
 				defaultChecked={row.getValue("attending")}
-				onCheckedChange={async (value) => {
+				onCheckedChange={async () => {
 					const req = await fetch(`/api/admin/attending/${row.getValue("id")}`)
 					if (req.ok || req.status === 200) toast.success("Successfully changed.")
-					row.toggleSelected(!value)
 				}}
 				aria-label="Select row"
 			/>
@@ -111,8 +110,8 @@ export const columns: ColumnDef<UserInt>[] = [
 		header: "Has Guest",
 		cell: ({ row }) => (
 			<Checkbox
-				defaultChecked={row.original.hasGuest || false} 
-				onCheckedChange={async () => { 
+				defaultChecked={row.original.hasGuest || false}
+				onCheckedChange={async () => {
 					try {
 						const req = await fetch(`/api/admin/hasguest/${row.original.id}`);
 						if (req.ok) {
@@ -137,7 +136,6 @@ export const columns: ColumnDef<UserInt>[] = [
 		cell: ({ row }) => (
 			<Checkbox
 				checked={row.original.tableId !== null}
-				onCheckedChange={(value) => row.toggleSelected(!!value)}
 				aria-label="Select row"
 			/>
 		),

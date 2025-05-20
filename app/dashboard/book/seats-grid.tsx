@@ -195,8 +195,8 @@ export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, 
 
 	return (
 		<>
-			<div className="lg:grid grid-cols-12"> {/* Main layout grid */}
-				<div className="col-span-10 lg:m-6">
+			<div className="lg:grid grid-cols-5"> {/* Main layout grid */}
+				<div className="col-span-4 md:m-6">
 					<div>
 						<Title>Book Your Table</Title>
 						<Subtitle>
@@ -225,8 +225,9 @@ export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, 
 									)
 								})}
 							</div>
-							<div className="md:w-[5px] m-4 md:break-all">
-								<h1 className="text-center font-black leading-5">Dance Floor & DJ</h1>
+							<div className="m-4">
+								<h1 className="text-center font-black invisible fixed md:visible md:static" style={{ writingMode: "vertical-rl" }}>Dance Floor & DJ</h1>
+								<h1 className="text-center font-black visible static md:fixed md:invisible">Dance Floor & DJ</h1>
 							</div>
 							<div className="grid grid-cols-5 gap-x-2 gap-y-2 w-full">
 								{tables.slice(25, 100).map((table: TableType, i) => {
@@ -256,7 +257,7 @@ export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, 
 				</div>
 
 				{/* Sidebar */}
-				<div className={`min-h-svh border-l p-4 w-full col-span-2 fixed inset-y-0 right-0 lg:static overflow-y-auto bg-card z-20 lg:z-auto transform transition-transform duration-300 ease-in-out ${sidebarVisible ? "translate-x-0" : "translate-x-full"} lg:translate-x-0`}
+				<div className={`min-h-svh border-l p-4 w-full col-span-1 fixed inset-y-0 right-0 lg:static overflow-y-auto bg-card z-20 lg:z-auto transform transition-transform duration-300 ease-in-out ${sidebarVisible ? "translate-x-0" : "translate-x-full"} lg:translate-x-0`}
 				>
 					{selectedTableInfo ? (
 						<>

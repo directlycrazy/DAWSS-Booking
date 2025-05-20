@@ -49,8 +49,6 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <NextTopLoader showSpinner={false} color="var(--primary)" />
-          {/* <Card className="overflow-hidden p-0 md:max-h-[650px] w-full md:max-w-[800px] lg:max-w-[1100px]"> */}
-          {/* <CardContent className="p-0"> */}
           <SidebarProvider>
             <Sidebar admin={(session && user && user.role) || false} />
             <div className="w-full">
@@ -67,8 +65,6 @@ export default async function RootLayout({
               </main>
             </div>
           </SidebarProvider>
-          {/* </CardContent>
-            </Card> */}
           <Toaster />
         </ThemeProvider>
       </body>
