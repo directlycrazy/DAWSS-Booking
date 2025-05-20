@@ -39,12 +39,12 @@ Once your Docker image is built, you should ensure the following through your da
 If you aren't using a GUI to manage the container, this can be summed up in the following command:
 ```bash
 docker run -d \
-	--name=sonarr \
+	--name=dawss_booking \
 	-e BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET \
 	-e BETTER_AUTH_URL=$BETTER_AUTH_URL \
 	-e RESEND_KEY=$RESEND_KEY \
 	-p 3000:3000 \
-	-v /opt/app/database.db:/DIR_ON_YOUR_DEVICE \
+	-v /opt/app/database.db:/DATABASE_ON_YOUR_DEVICE \
 	--restart unless-stopped \
 	dawss-booking
 ```
