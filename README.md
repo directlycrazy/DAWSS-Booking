@@ -28,7 +28,7 @@ RESEND_KEY=email key
 
 Build the Docker image with the following
 ```bash
-docker build --build-arg BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET --build-arg BETTER_AUTH_URL=$BETTER_AUTH_URL --build-arg RESEND_KEY=$RESEND_KEY -t dawss-booker .
+docker build --build-arg BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET --build-arg BETTER_AUTH_URL=$BETTER_AUTH_URL --build-arg RESEND_KEY=$RESEND_KEY -t dawss-booking .
 ```
 
 Once your Docker image is built, you should ensure the following through your dashboard:
