@@ -1,106 +1,92 @@
-"use client";
+"use client"
 
-import { ChevronDown, Home, LayoutDashboard, Settings, TicketCheck, User, Users } from "lucide-react"
+import * as React from "react"
+import {
+	House,
+	Info,
+	Settings2,
+	TicketCheck,
+	User,
+	Users,
+} from "lucide-react"
 import {
 	Sidebar,
 	SidebarContent,
-	SidebarGroup,
-	SidebarGroupContent,
-	SidebarGroupLabel,
+	SidebarFooter,
+	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	useSidebar,
 } from "@/components/ui/sidebar"
+import { NavUser } from "./sidebar/nav-user"
+import { NavMain } from "./sidebar/nav-main"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
+import { NavSecondary } from "./sidebar/nav-secondary"
 
-const items = [
-	{
-		title: "Home",
-		url: "/",
-		icon: Home,
-	},
-	{
-		title: "Dashboard",
-		url: "/dashboard",
-		icon: LayoutDashboard,
-	},
-	{
-		title: "Book",
-		url: "/dashboard/book",
-		icon: TicketCheck,
-	},
-	{
-		title: "Profile",
-		url: "/dashboard/profile",
-		icon: User,
-	},
-	{
-		title: "Settings",
-		url: "/dashboard/settings",
-		icon: Settings,
-	},
-]
+const data = {
+	navMain: [
+		{
+			name: "Home",
+			url: "/",
+			icon: House,
+		},
+		{
+			name: "Book",
+			url: "/dashboard",
+			icon: TicketCheck,
+		},
+		{
+			name: "Profile",
+			url: "/dashboard/profile",
+			icon: User,
+		},
+		{
+			name: "Admin",
+			url: "/dashboard/admin",
+			icon: Users,
+		}
+	],
+	navSecondary: [
+		{
+			title: "Settings",
+			url: "/dashboard/settings",
+			icon: Settings2,
+		},
+		{
+			title: "About",
+			url: "/dashboard/about",
+			icon: Info,
+		},
+	]
+}
 
-export default function AppSidebar({ admin }: { admin: boolean }) {
-	const { setOpenMobile } = useSidebar();
-	const pathname = usePathname();
-
+export default function AppSidebar({ user, ...props }: { user: { name: string, email: string } }) {
 	return (
-		<Sidebar className="hidden md:flex border-r min-h-full">
+		<Sidebar variant="inset" {...props}>
+			<SidebarHeader>
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton size="lg" asChild>
+							<Link href="/">
+								<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+									<TicketCheck className="size-4" />
+								</div>
+								<div className="grid flex-1 text-left text-sm leading-tight">
+									<span className="truncate font-semibold">Wilson {new Date().getFullYear()}</span>
+									<span className="truncate text-xs">Grad Social Booking</span>
+								</div>
+							</Link>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</SidebarHeader>
 			<SidebarContent>
-				<SidebarGroup>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							{items.map((item) => (
-								<SidebarMenuItem key={item.title} onClick={() => setOpenMobile(false)}>
-									<SidebarMenuButton
-										asChild
-										isActive={item.url === pathname}
-									>
-										<Link href={item.url}>
-											<item.icon />
-											<span>{item.title}</span>
-										</Link>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-							))}
-							{admin && <>
-
-							</>}
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
-				{admin && <Collapsible defaultOpen className="group/collapsible">
-					<SidebarGroup>
-						<SidebarGroupLabel asChild>
-							<CollapsibleTrigger>
-								Admin
-								<ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-							</CollapsibleTrigger>
-						</SidebarGroupLabel>
-						<CollapsibleContent>
-							<SidebarGroupContent>
-								<SidebarMenu>
-									<SidebarMenuItem onClick={() => setOpenMobile(false)}>
-										<SidebarMenuButton
-											asChild
-											isActive={"/dashboard/admin" === pathname}
-										>
-											<Link href="/dashboard/admin">
-												<Users />
-												<span>User List</span>
-											</Link>
-										</SidebarMenuButton>
-									</SidebarMenuItem>
-								</SidebarMenu>
-							</SidebarGroupContent>
-						</CollapsibleContent>
-					</SidebarGroup>
-				</Collapsible>}
+				<NavMain items={data.navMain} />
+				<NavSecondary items={data.navSecondary} className="mt-auto" />
 			</SidebarContent>
+			<SidebarFooter>
+				<NavUser user={user} />
+			</SidebarFooter>
 		</Sidebar>
 	)
 }

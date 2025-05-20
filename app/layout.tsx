@@ -2,14 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from '@/components/ui/sonner';
-import Sidebar from "@/components/sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import NextTopLoader from 'nextjs-toploader';
 import { ThemeProvider } from "@/components/theme-provider"
-import Breadcrumbs from "@/components/breadcrumbs";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { db } from "@/drizzle/db";
+import { Providers } from "./provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,14 +29,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth.api.getSession({
-    headers: await headers()
-  })
-
-  const user = await db.query.user.findFirst({
-    where: (s, { eq }) => (eq(s.id, session?.user.id || "")),
-  })
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -49,22 +36,9 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <NextTopLoader showSpinner={false} color="var(--primary)" />
-          <SidebarProvider>
-            <Sidebar admin={(session && user && user.role) || false} />
-            <div className="w-full">
-              <header className="flex h-16 z-[50] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b bg-sidebar">
-                <div className="flex items-center gap-2 px-4">
-                  <SidebarTrigger />
-                  <Breadcrumbs />
-                </div>
-              </header>
-              <main className="m-4 md:m-6">
-                <div>
-                  {children}
-                </div>
-              </main>
-            </div>
-          </SidebarProvider>
+          <Providers>
+            {children}
+          </Providers>
           <Toaster />
         </ThemeProvider>
       </body>

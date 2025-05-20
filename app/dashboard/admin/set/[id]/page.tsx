@@ -1,4 +1,4 @@
-import SeatsGrid from "@/app/dashboard/book/seats-grid";
+import SeatsGrid from "@/app/dashboard/(book)/seats-grid";
 import Title, { Subtitle } from "@/components/title";
 import { db } from "@/drizzle/db";
 import { auth } from "@/lib/auth"
