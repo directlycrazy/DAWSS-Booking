@@ -88,7 +88,7 @@ export const columns: ColumnDef<UserInt>[] = [
 		},
 		cell: ({ row }) => {
 			const tableId = row.original.tableId
-			return tableId ? <Link href={`/dashboard/book?table=${tableId}`} className="underline font-bold">{tableId}</Link> : <div>None</div>
+			return tableId ? <Link href={`/dashboard?table=${tableId}`} className="underline font-bold">{tableId}</Link> : <div>None</div>
 		},
 	},
 	{
@@ -154,7 +154,7 @@ export const columns: ColumnDef<UserInt>[] = [
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
 						<DropdownMenuItem onClick={() => {
-							if (row.original.tableId) redirect(`/dashboard/book?table=${row.original.tableId}`);
+							if (row.original.tableId) redirect(`/dashboard?table=${row.original.tableId}`);
 						}}>
 							Show Table
 						</DropdownMenuItem>
