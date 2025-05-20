@@ -1,6 +1,7 @@
 import { db } from "@/drizzle/db";
-import { user } from "@/drizzle/schema";
-import { NextRequest } from "next/server";
+import { user as userSchema } from '@/drizzle/schema'; 
+import { NextRequest, NextResponse } from "next/server";
+import { eq } from "drizzle-orm"; 
 
 function createRandomString(length: number) {
 	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -12,25 +13,39 @@ function createRandomString(length: number) {
 }
 
 export const GET = async (request: NextRequest) => {
-	if (process.env.NODE_ENV === "production") return;
-	const id = createRandomString(25);
-	console.log(id)
-	const time = new Date()
-	const res = await db.insert(user).values({
-		id: id,
-		email: request.nextUrl.searchParams.get("email"),
-		name: request.nextUrl.searchParams.get("name"),
-		emailVerified: 1,
-		createdAt: time,
-		updatedAt: time,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	} as any)
 
-	console.log(res)
+	const email = request.nextUrl.searchParams.get("email");
+	const name = request.nextUrl.searchParams.get("name");
 
-	return new Response("Success.", {
-		status: 200, headers: {
-			"content-type": "application/json"
+	if (!email || !name) {
+		return NextResponse.json({ message: "Email and name are required." }, { status: 400 });
+	}
+
+	try {
+		const existingUser = await db.query.user.findFirst({
+            where: eq(userSchema.email, email), 
+        });
+
+		if (existingUser) {
+			return NextResponse.json({ message: `User with email ${email} already exists.` }, { status: 409 });
 		}
-	});
+
+		const id = createRandomString(25);
+		const time = new Date();
+		
+		await db.insert(userSchema).values({
+			id: id,
+			email: email,
+			name: name,
+			emailVerified: true, 
+			createdAt: time,
+			updatedAt: time,
+		});
+
+		return NextResponse.json({ message: `User ${name} added successfully.` }, { status: 201 }); 
+
+	} catch (error: any) {
+		console.error("Error in /api/seed route:", error);
+		return NextResponse.json({ message: "Failed to process user.", error: error.message || "Unknown server error" }, { status: 500 });
+	}
 }
