@@ -3,6 +3,11 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import SignOut from "./sign-out";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Profile"
+};
 
 export default async function Profile() {
 	const session = await auth.api.getSession({

@@ -3,6 +3,11 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "@/drizzle/db";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Book"
+};
 
 export default async function Book() {
 	const session = await auth.api.getSession({

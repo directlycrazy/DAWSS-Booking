@@ -49,14 +49,14 @@ const data = {
 	],
 	navSecondary: [
 		{
-			title: "Settings",
-			url: "/dashboard/settings",
-			icon: Settings2,
-		},
-		{
 			title: "About",
 			url: "/dashboard/about",
 			icon: Info,
+		},
+		{
+			title: "Settings",
+			url: "/dashboard/settings",
+			icon: Settings2,
 		},
 	]
 }

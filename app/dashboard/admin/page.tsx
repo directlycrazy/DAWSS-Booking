@@ -4,6 +4,11 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation";
 import UserTable from './user-table';
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Admin"
+};
 
 export default async function Admin() {
 	const session = await auth.api.getSession({
