@@ -1,18 +1,21 @@
 "use client";
 
-import { myTableAtom, newBookingAtom, table, tableInfo, tableSidebarState, UserType } from "@/app/dashboard/(book)/shared";
-import { useAtom } from "jotai";
+import { hasGuestAtom, myTableAtom, newBookingAtom, SeatsGridProps, table, tableInfo, tablesAtom, tableSidebarState, TableType, UserType } from "@/app/dashboard/(book)/shared";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { calculateEffectiveOccupancy, getSpotsNeededForBookingUser, TABLE_CAPACITY } from "./shared";
 import { Button } from "@/components/ui/button";
 import { XIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 
-export default function BookSidebar() {
+export default function BookSidebar({ currentUserId, userId }: SeatsGridProps) {
+	const tables = useAtomValue<TableType[]>(tablesAtom);
 	const [sidebarVisible, setSidebarVisible] = useAtom(tableSidebarState);
 	const [selectedTableInfo, setTableInfo] = useAtom(tableInfo);
-	const [selectedTable, setSelectedTable] = useAtom(table);
-	const [myTable, setMyTable] = useAtom(myTableAtom);
-	const [newBooking, setNewBooking] = useAtom(newBookingAtom);
+	const setSelectedTable = useSetAtom(table);
+	const myTable = useAtomValue(myTableAtom);
+	const setNewBooking = useSetAtom(newBookingAtom);
+	const currentUserHasGuest = useAtomValue(hasGuestAtom);
 
 	const renderTableUsersWithGuests = (users: UserType[] | undefined) => {
 		if (!users) return null;
@@ -30,8 +33,11 @@ export default function BookSidebar() {
 		));
 	};
 
+
+	const userBeingBooked = tables.flatMap(t => t.users).find(u => u.id === userId);
+
 	//  Variables needed for the sidebar's guest logic 
-	const spotsNeededByCurrentUser = getSpotsNeededForBookingUser();
+	const spotsNeededByCurrentUser = getSpotsNeededForBookingUser(currentUserId, userId, userBeingBooked, currentUserHasGuest);
 	const currentSelectedTableOccupancy = selectedTableInfo?.users ? calculateEffectiveOccupancy(selectedTableInfo.users) : 0;
 	const spotsAvailableOnSelectedTable = TABLE_CAPACITY - currentSelectedTableOccupancy;
 	const myBookedTableIdAsNumber = typeof myTable === 'string' ? parseInt(myTable, 10) : myTable;

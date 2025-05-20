@@ -39,6 +39,7 @@ export default async function Book() {
 				initialTableId={currentUserData.tableId}
 				currentUserTableId={currentUserData.tableId}
 				currentUserRole={currentUserData.role ?? false}
+				showTitle={true}
 			/>
 		</div>
 	);

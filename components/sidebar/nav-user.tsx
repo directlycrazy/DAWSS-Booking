@@ -31,7 +31,7 @@ export function NavUser({
 	}
 }) {
 	const router = useRouter();
-	const { isMobile } = useSidebar()
+	const { isMobile, setOpenMobile } = useSidebar()
 
 	return (
 		<SidebarMenu>
@@ -65,6 +65,7 @@ export function NavUser({
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem onClick={async () => {
+							setOpenMobile(false);
 							await signOut({
 								fetchOptions: {
 									onSuccess: () => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { Seat } from "./seat";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -18,18 +18,19 @@ import Title, { Subtitle } from "@/components/title";
 import { Separator } from "@/components/ui/separator";
 import Table from './table';
 import { useSearchParams } from "next/navigation";
-import { calculateEffectiveOccupancy, getSpotsNeededForBookingUser, myTableAtom, newBookingAtom, table, TABLE_CAPACITY, tableInfo, tableSidebarState } from "@/app/dashboard/(book)/shared";
-import { useAtom } from "jotai";
+import { calculateEffectiveOccupancy, getSpotsNeededForBookingUser, hasGuestAtom, myTableAtom, newBookingAtom, table, TABLE_CAPACITY, tableInfo, tablesAtom, tableSidebarState } from "@/app/dashboard/(book)/shared";
+import { useAtom, useSetAtom } from "jotai";
 import { TableType, SeatsGridProps } from "@/app/dashboard/(book)/shared";
 
-export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, initialTableId, currentUserTableId, currentUserRole }: SeatsGridProps) {
-	const [tables, setTables] = useState<TableType[]>([]);
+export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, initialTableId, currentUserTableId, currentUserRole, showTitle }: SeatsGridProps) {
+	const [tables, setTables] = useAtom<TableType[]>(tablesAtom);
 	const [selectedTable, setSelectedTable] = useAtom(table);
-	const [selectedTableInfo, setTableInfo] = useAtom(tableInfo);
+	const setTableInfo = useSetAtom(tableInfo);
 	const [myTable, setMyTable] = useAtom(myTableAtom);
+	const setCurrentUserHasGuest = useSetAtom(hasGuestAtom);
 
 	const [newBooking, setNewBooking] = useAtom(newBookingAtom);
-	const [sidebarVisible, setSidebarVisible] = useAtom(tableSidebarState);
+	const setSidebarVisible = useSetAtom(tableSidebarState);
 
 	const searchParams = useSearchParams();
 	const tableParam = searchParams.get("table");
@@ -37,7 +38,6 @@ export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, 
 	const userBeingBooked = tables.flatMap(t => t.users).find(u => u.id === userId);
 
 	const spotsNeededByCurrentUser = getSpotsNeededForBookingUser(currentUserId, userId, userBeingBooked, currentUserHasGuest);
-
 
 	const bookSpot = async (overwrite: boolean) => {
 		if (overwrite && userId) {
@@ -77,6 +77,11 @@ export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, 
 		const tableInterval = setInterval(getNewTables, 2 * 60 * 1000);
 
 		if (initialTableId) setMyTable(String(initialTableId));
+		if (currentUserHasGuest) {
+			setCurrentUserHasGuest(true);
+		} else {
+			setCurrentUserHasGuest(false);
+		}
 
 		getNewTables();
 
@@ -135,13 +140,13 @@ export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, 
 
 	return (
 		<>
-			<div>
+			{showTitle && <div>
 				<Title>Book Your Table</Title>
 				<Subtitle>
 					Click a table to view its members or to book your spot.
 					{currentUserHasGuest && " You will be booking for yourself and one guest (2 spots total)."}
 				</Subtitle>
-			</div>
+			</div>}
 			<Separator className="my-4" />
 			<div className="md:flex gap-x-2">
 				{!tables.length && <Loader />}
@@ -198,11 +203,11 @@ export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, 
 					<AlertDialogHeader>
 						<AlertDialogTitle>Would you like to book this table?</AlertDialogTitle>
 						<AlertDialogDescription>
-							This action <b>can be undone</b>.
-							{currentUserHasGuest ?
-								` You are booking for yourself and one guest (${spotsNeededByCurrentUser} spots).` :
-								" You are booking for yourself (1 spot)."
-							}
+							<b>
+								{currentUserHasGuest ?
+									` You are booking for yourself and one guest (${spotsNeededByCurrentUser} spots).` :
+									" You are booking for yourself (1 spot)."
+								}</b>
 							{(typeof myTable === 'string' && myTable !== "" && myTable !== selectedTable) || (typeof myTable === 'number' && myTable !== 0 && myTable !== Number(selectedTable)) ?
 								" Your previous booking will be replaced with this one. " :
 								" "

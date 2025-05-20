@@ -2,12 +2,12 @@
 
 import * as React from "react"
 import {
+	Earth,
 	House,
 	Info,
 	Settings2,
 	TicketCheck,
 	User,
-	Users,
 } from "lucide-react"
 import {
 	Sidebar,
@@ -41,9 +41,10 @@ const data = {
 			icon: User,
 		},
 		{
-			name: "Admin",
-			url: "/dashboard/admin",
-			icon: Users,
+			name: "Website",
+			url: "https://sites.google.com/ddsb.ca/dawssgradsocial/home",
+			icon: Earth,
+			newTab: true
 		}
 	],
 	navSecondary: [
@@ -60,7 +61,7 @@ const data = {
 	]
 }
 
-export default function AppSidebar({ user, ...props }: { user: { name: string, email: string } }) {
+export default function AppSidebar({ user, ...props }: { user: { name: string, email: string, role: boolean | null } }) {
 	return (
 		<Sidebar variant="inset" {...props}>
 			<SidebarHeader>
@@ -81,7 +82,7 @@ export default function AppSidebar({ user, ...props }: { user: { name: string, e
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent>
-				<NavMain items={data.navMain} />
+				<NavMain items={data.navMain} role={user.role ?? false} />
 				<NavSecondary items={data.navSecondary} className="mt-auto" />
 			</SidebarContent>
 			<SidebarFooter>

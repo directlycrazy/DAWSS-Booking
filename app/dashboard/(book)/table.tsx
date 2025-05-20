@@ -1,4 +1,4 @@
-import { TableType } from "./seats-grid";
+import { TableType } from "./shared";
 
 export default function Table({ table, color, click }: { table: TableType, color: "default" | "full" | "selected" | "booked" | string, click: (table: TableType) => void }) {
 	return (

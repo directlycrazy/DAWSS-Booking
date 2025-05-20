@@ -21,7 +21,7 @@ export default async function RootLayout({
 		where: (s, { eq }) => (eq(s.id, session?.user.id || "")),
 	})
 
-	if (!user) return redirect("/login");
+	if (!user || !session) return redirect("/login");
 
 	return (
 		<SidebarProvider>
@@ -38,7 +38,11 @@ export default async function RootLayout({
 					{children}
 				</div>
 			</SidebarInset>
-			<ShowSidebar />
+			<ShowSidebar currentUserId={session.user.id}
+				currentUserHasGuest={user.hasGuest ?? false}
+				initialTableId={user.tableId}
+				currentUserTableId={user.tableId}
+				currentUserRole={user.role ?? false} />
 		</SidebarProvider>
 	);
 }
