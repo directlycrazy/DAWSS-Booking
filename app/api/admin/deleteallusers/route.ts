@@ -2,10 +2,10 @@ import { db } from "@/drizzle/db";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { user as userSchema } from '@/drizzle/schema';
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { eq, not } from "drizzle-orm";
 
-export const DELETE = async (request: NextRequest) => {
+export const DELETE = async () => {
     const session = await auth.api.getSession({ headers: await headers() });
 
     if (!session?.user.id) {
@@ -16,7 +16,7 @@ export const DELETE = async (request: NextRequest) => {
         where: (s, { eq }) => eq(s.id, session.user.id),
     });
 
-    if (!adminUser || !adminUser.role) { // Assuming 'role' indicates admin status
+    if (!adminUser || adminUser.role !== true) { // Assuming 'role' indicates admin status
         return NextResponse.json({ message: "You do not have permission to perform this action." }, { status: 403 });
     }
 

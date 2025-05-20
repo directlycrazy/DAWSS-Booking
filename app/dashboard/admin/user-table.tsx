@@ -2,35 +2,35 @@
 
 import * as React from "react"
 import {
-	ColumnDef,
-	ColumnFiltersState,
-	SortingState,
-	VisibilityState,
-	flexRender,
-	getCoreRowModel,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	useReactTable,
+    ColumnDef,
+    ColumnFiltersState,
+    SortingState,
+    VisibilityState,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    useReactTable,
 } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal, UploadCloud, Trash2, ShieldAlert, PlusCircle } from "lucide-react" // Added PlusCircle
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuSeparator,
-	DropdownMenuTrigger,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table"
 import {
     AlertDialog,
@@ -60,32 +60,30 @@ import Link from "next/link"
 import * as XLSX from 'xlsx';
 
 interface UserInt {
-	id: string,
-	name: string,
-	email: string,
-	role: boolean,
-	tableId: string | null,
-	attending: boolean
-	hasGuest?: boolean
+    id: string,
+    name: string,
+    email: string,
+    role: boolean,
+    tableId: string | null,
+    attending: boolean
+    hasGuest?: boolean
 }
 
 interface ExcelRow {
-	Name?: string;
-	Email?: string;
-	[key: string]: any;
+    Name?: string;
+    Email?: string;
 }
 
-
 export default function UserTable() {
-	const [sorting, setSorting] = React.useState<SortingState>([])
-	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-		[]
-	)
-	const [columnVisibility, setColumnVisibility] =
-		React.useState<VisibilityState>({ id: false })
-	const [rowSelection, setRowSelection] = React.useState({})
-	const [data, setData] = React.useState<UserInt[]>([]);
-	const fileInputRef = useRef<HTMLInputElement>(null);
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+        []
+    )
+    const [columnVisibility, setColumnVisibility] =
+        React.useState<VisibilityState>({ id: false })
+    const [rowSelection, setRowSelection] = React.useState({})
+    const [data, setData] = React.useState<UserInt[]>([]);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // State for confirmation dialogs
     const [showDeleteUserDialog, setShowDeleteUserDialog] = useState(false);
@@ -98,7 +96,7 @@ export default function UserTable() {
     const [newUserEmail, setNewUserEmail] = useState("");
 
 
-	const columns: ColumnDef<UserInt>[] = [
+    const columns: ColumnDef<UserInt>[] = [
         {
             accessorKey: "name",
             header: ({ column }) => (
@@ -145,7 +143,7 @@ export default function UserTable() {
                             const resJson = await req.json();
                             if (req.ok) toast.success(resJson.message || "Successfully updated guest status.");
                             else toast.error(`Failed to update guest status: ${resJson.message || req.statusText}`);
-                        } catch (error) {
+                        } catch {
                             toast.error("An error occurred while updating guest status.");
                         }
                     }}
@@ -172,7 +170,7 @@ export default function UserTable() {
                                 const res = await fetch(`/api/admin/removebooking/${user.id}`);
                                 if (res.ok) {
                                     toast.success("Successfully removed booking.");
-                                    getUsers(); 
+                                    getUsers();
                                 } else {
                                     toast.error("Failed to remove booking.");
                                 }
@@ -197,46 +195,46 @@ export default function UserTable() {
     ];
 
 
-	const table = useReactTable({
-		data,
-		columns,
-		onSortingChange: setSorting,
-		onColumnFiltersChange: setColumnFilters,
-		getCoreRowModel: getCoreRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		onColumnVisibilityChange: setColumnVisibility,
-		onRowSelectionChange: setRowSelection,
-		state: {
-			sorting,
-			columnFilters,
-			columnVisibility,
-			rowSelection,
-		},
-		initialState: {
-			pagination: {
-				pageIndex: 0,
-				pageSize: 15
-			}
-		}
-	})
+    const table = useReactTable({
+        data,
+        columns,
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
+        state: {
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection,
+        },
+        initialState: {
+            pagination: {
+                pageIndex: 0,
+                pageSize: 15
+            }
+        }
+    })
 
-	const getUsers = async () => {
-		try {
-			const res = await fetch(`/api/admin/listusers`);
-			if (!res.ok) throw new Error(`Failed to fetch users: ${res.statusText}`);
-			const json = await res.json();
-			setData(json);
-		} catch (error) {
-			console.error("Error fetching users:", error);
-			toast.error("Could not load user data.");
-		}
-	}
+    const getUsers = async () => {
+        try {
+            const res = await fetch(`/api/admin/listusers`);
+            if (!res.ok) throw new Error(`Failed to fetch users: ${res.statusText}`);
+            const json = await res.json();
+            setData(json);
+        } catch (error) {
+            console.error("Error fetching users:", error);
+            toast.error("Could not load user data.");
+        }
+    }
 
-	useEffect(() => {
-		getUsers();
-	}, [])
+    useEffect(() => {
+        getUsers();
+    }, [])
 
     const handleExport = () => {
         const rowsToExport = table.getFilteredRowModel().rows.map(row => {
@@ -251,7 +249,7 @@ export default function UserTable() {
         const worksheet = XLSX.utils.json_to_sheet(rowsToExport);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
-        XLSX.writeFile(workbook, `User_Table_Export_${new Date().toISOString().slice(0,10)}.xlsx`);
+        XLSX.writeFile(workbook, `User_Table_Export_${new Date().toISOString().slice(0, 10)}.xlsx`);
         toast.success("Data exported successfully!");
     };
 
@@ -285,7 +283,7 @@ export default function UserTable() {
                             toast.error(`Failed to process ${name} (${email}): ${errorResult.message || response.statusText}`);
                             failCount++;
                         }
-                    } catch (err) {
+                    } catch {
                         toast.error(`Client-side error processing ${name} (${email}).`);
                         failCount++;
                     }
@@ -299,13 +297,13 @@ export default function UserTable() {
                     else toast.success(summaryMessage.trim() || "Processing complete.");
                 } else if (jsonRows.length > 0) toast.info("No users processed (check data/console).");
                 getUsers();
-            } catch (err) {
+            } catch {
                 toast.error("Failed to process Excel. Ensure 'Name' & 'Email' columns exist.");
             } finally {
                 if (fileInputRef.current) fileInputRef.current.value = "";
             }
         };
-        reader.onerror = () => { toast.error("Failed to read file."); if (fileInputRef.current) fileInputRef.current.value = "";};
+        reader.onerror = () => { toast.error("Failed to read file."); if (fileInputRef.current) fileInputRef.current.value = ""; };
         reader.readAsBinaryString(file);
     };
 
@@ -318,7 +316,7 @@ export default function UserTable() {
                 toast.success(result.message || `User ${userToDelete.name} deleted.`);
                 getUsers();
             } else toast.error(result.message || "Failed to delete user.");
-        } catch (error) {
+        } catch {
             toast.error("Error deleting user.");
         }
         setShowDeleteUserDialog(false);
@@ -333,7 +331,7 @@ export default function UserTable() {
                 toast.success(result.message || "All users deleted.");
                 getUsers();
             } else toast.error(result.message || "Failed to delete all users.");
-        } catch (error) {
+        } catch {
             toast.error("Error deleting all users.");
         }
         setShowDeleteAllUsersDialog(false);
@@ -372,17 +370,17 @@ export default function UserTable() {
     };
 
 
-	return (
-		<div className="w-full -mt-2">
-			<div className="flex items-center py-4">
-				<Input
-					placeholder="Filter users..."
-					value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-					onChange={(event) =>
-						table.getColumn("name")?.setFilterValue(event.target.value)
-					}
-					className="max-w-sm"
-				/>
+    return (
+        <div className="w-full -mt-2">
+            <div className="flex items-center py-4">
+                <Input
+                    placeholder="Filter users..."
+                    value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                    onChange={(event) =>
+                        table.getColumn("name")?.setFilterValue(event.target.value)
+                    }
+                    className="max-w-sm"
+                />
                 <div className="ml-auto flex items-center gap-2">
                     <Dialog open={showAddUserDialog} onOpenChange={setShowAddUserDialog}>
                         <DialogTrigger asChild>
@@ -395,7 +393,7 @@ export default function UserTable() {
                             <DialogHeader>
                                 <DialogTitle>Add New Student</DialogTitle>
                                 <DialogDescription>
-                                    Manually add a new student to the system. Click save when you're done.
+                                    Manually add a new student to the system. Click save when you&apos;re done.
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-4 py-4">
@@ -456,29 +454,29 @@ export default function UserTable() {
                         Delete All Users
                     </Button>
                 </div>
-			</div>
-			<div className="rounded-md border">
-				<Table>
-					<TableHeader>{table.getHeaderGroups().map(hg => (<TableRow key={hg.id}>{hg.headers.map(h => (<TableHead key={h.id}>{h.isPlaceholder ? null : flexRender(h.column.columnDef.header, h.getContext())}</TableHead>))}</TableRow>))}</TableHeader>
-					<TableBody>
-						{table.getRowModel().rows?.length ? (
-							table.getRowModel().rows.map((row) => (
-								<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-									{row.getVisibleCells().map((cell) => (<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>))}
-								</TableRow>
-							))
-						) : (
-							<TableRow><TableCell colSpan={columns.length} className="h-24 text-center">No results.</TableCell></TableRow>
-						)}
-					</TableBody>
-				</Table>
-			</div>
-			<div className="flex items-center justify-end space-x-2 py-4">
-				<div className="space-x-2">
-					<Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>Previous</Button>
-					<Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>Next</Button>
-				</div>
-			</div>
+            </div>
+            <div className="rounded-md border">
+                <Table>
+                    <TableHeader>{table.getHeaderGroups().map(hg => (<TableRow key={hg.id}>{hg.headers.map(h => (<TableHead key={h.id}>{h.isPlaceholder ? null : flexRender(h.column.columnDef.header, h.getContext())}</TableHead>))}</TableRow>))}</TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                    {row.getVisibleCells().map((cell) => (<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow><TableCell colSpan={columns.length} className="h-24 text-center">No results.</TableCell></TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+            <div className="flex items-center justify-end space-x-2 py-4">
+                <div className="space-x-2">
+                    <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>Previous</Button>
+                    <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>Next</Button>
+                </div>
+            </div>
 
             {/* Delete User Confirmation Dialog */}
             <AlertDialog open={showDeleteUserDialog} onOpenChange={setShowDeleteUserDialog}>
@@ -502,7 +500,7 @@ export default function UserTable() {
             <AlertDialog open={showDeleteAllUsersDialog} onOpenChange={setShowDeleteAllUsersDialog}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle className="flex items-center"><ShieldAlert className="mr-2 h-6 w-6 text-red-500"/>Confirm Deletion of All Users</AlertDialogTitle>
+                        <AlertDialogTitle className="flex items-center"><ShieldAlert className="mr-2 h-6 w-6 text-red-500" />Confirm Deletion of All Users</AlertDialogTitle>
                         <AlertDialogDescription>
                             <strong>This is a highly destructive action and cannot be undone.</strong> This will permanently delete <strong>ALL</strong> users from the database.
                             Are you absolutely sure you want to proceed?
@@ -516,6 +514,6 @@ export default function UserTable() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-		</div>
-	)
+        </div>
+    )
 }
