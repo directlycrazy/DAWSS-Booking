@@ -17,17 +17,24 @@ export const auth = betterAuth({
 					from: "DAWSS Booking <dawbooking@mail.jamescolb.com>",
 					to: [data.email],
 					subject: "Login to your Donald A. Wilson Grad Social Booking Account",
-					html: `<p>Hello, Donald A. Wilson Student,</p>
-					<p>
-						<b>Click the following link to access your account:</b>
-						<span><a href="${data.url}">${data.url}</a></span>
-					</p>
-					<p>If you have any issues accessing the application, please wait a few minutes and try again. If this does not work, please contact a member of the Donald A. Wilson faculty to help assist you.
-					<p>
-						<span>Thanks,</span>
-						<span>Donald A. Wilson Grad Social Booking Team</span>
-					</p>
-					`
+					html: `<p>Hello Donald A. Wilson Student,</p>
+					<p>We received a request to login to your Grad Social Booking account using this email address. If you want to sign in with your ${data.email} account, please click this link:</p>
+					<a href="${data.url}">Sign in to your Grad Social Account</a>
+					<p>If you did not request this, you can safely ignore this email or contact a member of staff.</p>
+					<p>Thanks,</p>
+					<p>Donald A. Wilson Grad Social Booking Team</p>
+					`,
+					text: `Hello Donald A. Wilson Student,
+
+					We received a request to login to your Grad Social Booking account using this email address. If you want to sign in with your ${data.email} account, please click this link:
+					
+					${data.url}
+					
+					If you did not request this, you can safely ignore this email or contact a member of staff.
+
+					Thanks,
+					Donald A. Wilson Grad Social Booking Team
+					`,
 				})
 			},
 		}),
