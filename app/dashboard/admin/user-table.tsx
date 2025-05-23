@@ -126,6 +126,7 @@ export default function UserTable() {
                         const req = await fetch(`/api/admin/attending/${row.getValue("id")}`);
                         if (req.ok) toast.success("Successfully changed.");
                         else toast.error("Failed to change attending status.");
+                        getUsers();
                     }}
                     aria-label="Select row"
                 />
@@ -143,6 +144,7 @@ export default function UserTable() {
                             const resJson = await req.json();
                             if (req.ok) toast.success(resJson.message || "Successfully updated guest status.");
                             else toast.error(`Failed to update guest status: ${resJson.message || req.statusText}`);
+                            getUsers();
                         } catch {
                             toast.error("An error occurred while updating guest status.");
                         }
@@ -181,6 +183,7 @@ export default function UserTable() {
                                 onClick={() => {
                                     setUserToDelete(user);
                                     setShowDeleteUserDialog(true);
+                                    getUsers();
                                 }}
                                 className="text-red-600 hover:!text-red-700"
                             >
@@ -226,6 +229,7 @@ export default function UserTable() {
             if (!res.ok) throw new Error(`Failed to fetch users: ${res.statusText}`);
             const json = await res.json();
             setData(json);
+            toast.success("Users have been refreshed.");
         } catch (error) {
             console.error("Error fetching users:", error);
             toast.error("Could not load user data.");
