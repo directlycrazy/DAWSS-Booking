@@ -35,8 +35,8 @@ export default async function LoginPage() {
 					<div className="w-full -mt-20">
 						<Tabs defaultValue="email" className="max-w-[500px] mx-auto">
 							<TabsList>
-								<TabsTrigger value="email">Using Magic Link</TabsTrigger>
-								<TabsTrigger value="pass">Using Password</TabsTrigger>
+								<TabsTrigger value="email">Student Login</TabsTrigger>
+								<TabsTrigger value="pass">Staff Login</TabsTrigger>
 							</TabsList>
 							<TabsContent value="email">
 								<SignIn />

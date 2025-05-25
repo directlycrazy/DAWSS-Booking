@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
@@ -17,9 +17,9 @@ export default function SignIn() {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle className="text-lg md:text-xl">Password Sign In</CardTitle>
+				<CardTitle className="text-lg md:text-xl">Staff Login</CardTitle>
 				<CardDescription className="text-xs md:text-sm">
-					Enter your email below to login to your account
+					Enter your staff DDSB email and password below to login to your account.
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
@@ -84,9 +84,6 @@ export default function SignIn() {
 					</Button>
 				</div>
 			</CardContent>
-			<CardFooter className="text-muted-foreground text-sm">
-				If you are not a member of staff, please login using a &quot;Magic Link&quot;
-			</CardFooter>
 		</Card>
 	);
 }

@@ -16,9 +16,9 @@ export default function Login() {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle className="text-lg md:text-xl">Welcome to Wilson Grad Social Seat Booking.</CardTitle>
+				<CardTitle className="text-lg md:text-xl">Student Login</CardTitle>
 				<CardDescription className="text-xs md:text-sm">
-					Enter your DDSB email below to login to your account.
+					Enter your DDSB student email below to login to your account.
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
