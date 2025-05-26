@@ -43,5 +43,8 @@ export const auth = betterAuth({
 		enabled: true,
 		disableSignUp: true
 	},
+	rateLimit: {
+		enabled: false
+	},
 	baseURL: process.env.BETTER_AUTH_URL
 });

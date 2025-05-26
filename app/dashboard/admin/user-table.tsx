@@ -76,9 +76,7 @@ interface ExcelRow {
 
 export default function UserTable() {
     const [sorting, setSorting] = React.useState<SortingState>([])
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-        []
-    )
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({ id: false })
     const [rowSelection, setRowSelection] = React.useState({})
@@ -94,7 +92,6 @@ export default function UserTable() {
     const [showAddUserDialog, setShowAddUserDialog] = useState(false);
     const [newUserName, setNewUserName] = useState("");
     const [newUserEmail, setNewUserEmail] = useState("");
-
 
     const columns: ColumnDef<UserInt>[] = [
         {
