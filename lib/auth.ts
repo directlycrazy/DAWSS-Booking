@@ -15,7 +15,7 @@ export const auth = betterAuth({
 			disableSignUp: true,
 			async sendMagicLink(data) {
 				await resend.emails.send({
-					from: "DAWSS Booking <dawbooking@mail.jamescolb.com>",
+					from: `DAWSS Booking <${process.env.MAIL_ADDRESS || "dawbooking@mail.jamescolb.com"}>`,
 					to: [data.email],
 					subject: "Login to your Donald A. Wilson Grad Social Booking Account",
 					html: `<p>Hello Donald A. Wilson Student,</p>
