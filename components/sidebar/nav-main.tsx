@@ -57,7 +57,7 @@ export function NavMain({
 					</SidebarGroupLabel>
 					<CollapsibleContent>
 						<SidebarMenu>
-							<SidebarMenuItem>
+							<SidebarMenuItem onClick={() => setOpenMobile(false)}>
 								<SidebarMenuButton asChild>
 									<Link href="/dashboard/admin">
 										<Users />
@@ -65,7 +65,7 @@ export function NavMain({
 									</Link>
 								</SidebarMenuButton>
 							</SidebarMenuItem>
-							<SidebarMenuItem>
+							<SidebarMenuItem onClick={() => setOpenMobile(false)}>
 								<SidebarMenuButton asChild>
 									<Link href="/dashboard/admin/stats">
 										<ChartNoAxesCombined />
