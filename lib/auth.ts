@@ -12,6 +12,7 @@ export const auth = betterAuth({
 	}),
 	plugins: [
 		magicLink({
+			disableSignUp: true,
 			async sendMagicLink(data) {
 				await resend.emails.send({
 					from: "DAWSS Booking <dawbooking@mail.jamescolb.com>",
