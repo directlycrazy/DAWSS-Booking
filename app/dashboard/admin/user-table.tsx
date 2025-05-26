@@ -229,7 +229,7 @@ export default function UserTable() {
             if (!res.ok) throw new Error(`Failed to fetch users: ${res.statusText}`);
             const json = await res.json();
             setData(json);
-            toast.success("Users have been refreshed.");
+            // toast.success("Users have been refreshed.");
         } catch (error) {
             console.error("Error fetching users:", error);
             toast.error("Could not load user data.");
