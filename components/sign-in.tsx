@@ -11,6 +11,8 @@ import { toast } from "sonner";
 
 export default function Login() {
 	const [email, setEmail] = useState("");
+	const [buttonDisabled, setButtonDisabled] = useState(false);
+	const [timeRemaining, setTimeRemaining] = useState(0);
 	const [loading, setLoading] = useState(false);
 
 	return (
@@ -26,7 +28,7 @@ export default function Login() {
 					<div className="grid gap-2">
 						<Label htmlFor="email">Email</Label>
 						<Input id="email" type="email" autoComplete="off" placeholder="s000000000@ddsbstudent.ca" required onChange={(e) => { setEmail(e.target.value); }} value={email} />
-						<Button disabled={loading} className="gap-2" onClick={async () => {
+						<Button disabled={loading || buttonDisabled} className="gap-2" onClick={async () => {
 							if (!email) {
 								return toast.error("Please enter an email.");
 							}
@@ -35,18 +37,28 @@ export default function Login() {
 							}
 							await signIn.magicLink({ email, callbackURL: "/dashboard" }, {
 								onRequest: () => {
+									setButtonDisabled(true);
 									setLoading(true);
 								},
 								onResponse: () => {
 									setLoading(false);
 									toast.success("An email has been sent to your inbox.");
+
+									setTimeRemaining(59);
+									setInterval(() => {
+										setTimeRemaining(a => a - 1);
+									}, 1000)
+
+									setTimeout(() => {
+										setButtonDisabled(false);
+									}, 59 * 1000)
 								},
 								onError: (ctx) => {
 									toast.error(ctx.error.message);
 								}
 							});
 						}}>
-							{loading ? (<Loader2 size={16} className="animate-spin" />) : (<>Sign-in with Magic Link</>)}
+							{loading ? (<Loader2 size={16} className="animate-spin" />) : buttonDisabled ? <>Try Again in {timeRemaining} Seconds</> : <>Sign-in with Magic Link</>}
 						</Button>
 					</div>
 				</div>
