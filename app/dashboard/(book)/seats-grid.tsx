@@ -99,6 +99,9 @@ export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, 
 	}, []);
 
 	const setTable = async (id: string | number) => {
+		//Refresh tables, possible changes
+		getNewTables();
+
 		const idStr = id.toString();
 		setSelectedTable(idStr);
 		if (!idStr) {
@@ -122,7 +125,9 @@ export default function SeatsGrid({ currentUserId, currentUserHasGuest, userId, 
 
 	const handleTableClick = async (table: TableType) => {
 		const effectiveOccupancy = calculateEffectiveOccupancy(table.users)
-		if (effectiveOccupancy >= 10 && table.id !== currentUserTableId && !currentUserRole) {
+		const isMyTable = myTable ? table.id === Number(myTable) : false;
+
+		if (effectiveOccupancy >= 10 && !isMyTable && !currentUserRole) {
 			toast.info(`Table ${table.id} is full and cannot be selected for booking directly.`);
 			return;
 		}

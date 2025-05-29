@@ -46,7 +46,9 @@ export const getSpotsNeededForBookingUser = (currentUserId?: string, userId?: st
 export const tablesAtom = atom<TableType[]>([]);
 export const table = atom("");
 export const tableInfo = atom<TableType | null>(null);
-export const tableSidebarState = atom(false);
 export const myTableAtom = atom("");
-export const newBookingAtom = atom(false);
 export const hasGuestAtom = atom(false);
+
+//State Atoms
+export const tableSidebarState = atom(false);
+export const newBookingAtom = atom(false);
