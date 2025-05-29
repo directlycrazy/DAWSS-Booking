@@ -45,7 +45,7 @@ export default function BookSidebar({ currentUserId, userId }: SeatsGridProps) {
 	const canBookSelectedTable = selectedTableInfo && (spotsAvailableOnSelectedTable >= spotsNeededByCurrentUser);
 
 	return (
-		<div className={`border-l p-4 w-full md:max-w-[300px] fixed inset-y-0 right-0 lg:static overflow-y-auto bg-card z-20 lg:z-auto transform transition-transform duration-300 ease-in-out ${sidebarVisible ? "translate-x-0" : "translate-x-full"} lg:translate-x-0`}
+		<div className={`p-4 w-full md:max-w-[300px] fixed bg-sidebar inset-y-0 right-0 lg:static overflow-y-auto z-20 lg:z-auto transform transition-transform duration-300 ease-in-out ${sidebarVisible ? "translate-x-0" : "translate-x-full"} lg:translate-x-0`}
 		>
 			{selectedTableInfo ? (
 				<>
