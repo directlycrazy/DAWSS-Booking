@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { count, eq, isNotNull } from "drizzle-orm";
 import { user as userSchema } from "@/drizzle/schema";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export const metadata: Metadata = {
 	title: "Statistics"
@@ -32,12 +33,40 @@ export default async function AdminStats() {
 	return (
 		<>
 			<Title>Statistics</Title>
-			<div className="space-y-2">
-				<div>
-					<p><b>Total Users:</b> {totalUsers[0].count}</p>
-					<p><b>Total Attending:</b> {totalAttending[0].count}</p>
-					<p><b>Total Guests:</b> {totalGuests[0].count}</p>
-					<p><b>Total Booked:</b> {totalBooked[0].count}</p>
+			<div className="max-w-[800px] mt-2">
+				<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-y-2 lg:gap-y-0 md:gap-x-2">
+					<Card className="gap-0 w-full">
+						<CardHeader className="text-sm text-muted-foreground">
+							Total Users
+						</CardHeader>
+						<CardContent>
+							<h1 className="text-3xl font-bold">{totalUsers[0].count}</h1>
+						</CardContent>
+					</Card>
+					<Card className="gap-0 w-full">
+						<CardHeader className="text-sm text-muted-foreground">
+							Total Attendees
+						</CardHeader>
+						<CardContent>
+							<h1 className="text-3xl font-bold">{totalAttending[0].count}</h1>
+						</CardContent>
+					</Card>
+					<Card className="gap-0 w-full">
+						<CardHeader className="text-sm text-muted-foreground">
+							Total Booked
+						</CardHeader>
+						<CardContent>
+							<h1 className="text-3xl font-bold">{totalBooked[0].count}</h1>
+						</CardContent>
+					</Card>
+					<Card className="gap-0 w-full">
+						<CardHeader className="text-sm text-muted-foreground">
+							Total Guests
+						</CardHeader>
+						<CardContent>
+							<h1 className="text-3xl font-bold">{totalGuests[0].count}</h1>
+						</CardContent>
+					</Card>
 				</div>
 			</div>
 		</>
