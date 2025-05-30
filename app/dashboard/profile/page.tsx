@@ -24,7 +24,7 @@ export default async function Profile() {
 		where: (s, { eq }) => (eq(s.id, session?.user.id || "")),
 	})
 
-	if (!user || !user.role) return redirect("/login");
+	if (!user) return redirect("/login");
 
 	const submitted = user.tableId;
 
