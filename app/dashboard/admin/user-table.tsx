@@ -13,7 +13,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, UploadCloud, Trash2, ShieldAlert, PlusCircle } from "lucide-react" // Added PlusCircle
+import { ArrowUpDown, MoreHorizontal, UploadCloud, Trash2, PlusCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -85,7 +85,6 @@ export default function UserTable() {
 
     // State for confirmation dialogs
     const [showDeleteUserDialog, setShowDeleteUserDialog] = useState(false);
-    const [showDeleteAllUsersDialog, setShowDeleteAllUsersDialog] = useState(false);
     const [userToDelete, setUserToDelete] = useState<UserInt | null>(null);
 
     // State for Add User Dialog
@@ -182,7 +181,7 @@ export default function UserTable() {
                                     setShowDeleteUserDialog(true);
                                     getUsers();
                                 }}
-                                className="text-red-600 hover:!text-red-700"
+                                className="text-destructive hover:!text-destructive/90"
                             >
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Delete User
@@ -324,20 +323,6 @@ export default function UserTable() {
         setUserToDelete(null);
     };
 
-    const confirmDeleteAllUsers = async () => {
-        try {
-            const response = await fetch(`/api/admin/deleteallusers`, { method: 'DELETE' });
-            const result = await response.json();
-            if (response.ok) {
-                toast.success(result.message || "All users deleted.");
-                getUsers();
-            } else toast.error(result.message || "Failed to delete all users.");
-        } catch {
-            toast.error("Error deleting all users.");
-        }
-        setShowDeleteAllUsersDialog(false);
-    };
-
     const handleManualAddUser = async () => {
         if (!newUserName.trim() || !newUserEmail.trim()) {
             toast.error("Name and Email cannot be empty.");
@@ -447,13 +432,7 @@ export default function UserTable() {
                     <Button variant="outline" onClick={handleExport}>
                         Download Excel
                     </Button>
-                    <Button
-                        variant="destructive"
-                        onClick={() => setShowDeleteAllUsersDialog(true)}
-                    >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete All Users
-                    </Button>
+
                 </div>
             </div>
             <div className="rounded-md border">
@@ -490,27 +469,8 @@ export default function UserTable() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel onClick={() => setUserToDelete(null)}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={confirmDeleteUser} className="bg-red-600 hover:bg-red-700">
+                        <AlertDialogAction onClick={confirmDeleteUser} className="bg-destructive hover:bg-destructive/90">
                             Yes, delete user
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-
-            {/* Delete All Users Confirmation Dialog */}
-            <AlertDialog open={showDeleteAllUsersDialog} onOpenChange={setShowDeleteAllUsersDialog}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle className="flex items-center"><ShieldAlert className="mr-2 h-6 w-6 text-red-500" />Confirm Deletion of All Users</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            <strong>This is a highly destructive action and cannot be undone.</strong> This will permanently delete <strong>ALL</strong> users from the database.
-                            Are you absolutely sure you want to proceed?
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={confirmDeleteAllUsers} className="bg-red-600 hover:bg-red-700">
-                            Yes, delete ALL users
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
