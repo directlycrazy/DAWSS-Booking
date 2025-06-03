@@ -16,6 +16,8 @@ export const metadata: Metadata = {
 
 export default async function OnboardingOne() {
 	//If onboarding state is not active, prevent page access
+	console.log(await getOnboarding())
+	console.log((!(await getOnboarding())));
 	if (!(await getOnboarding())) return redirect("/");
 
 	const CreateUser = async (email: string, password: string) => {
