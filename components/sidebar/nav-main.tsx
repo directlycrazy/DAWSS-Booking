@@ -3,6 +3,7 @@
 import {
 	ChartNoAxesCombined,
 	ChevronDown,
+	Command,
 	Users,
 	type LucideIcon,
 } from "lucide-react"
@@ -70,6 +71,14 @@ export function NavMain({
 									<Link href="/dashboard/admin/stats">
 										<ChartNoAxesCombined />
 										<span>Statistics</span>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+							<SidebarMenuItem onClick={() => setOpenMobile(false)}>
+								<SidebarMenuButton asChild>
+									<Link href="/dashboard/admin/actions">
+										<Command />
+										<span>Actions</span>
 									</Link>
 								</SidebarMenuButton>
 							</SidebarMenuItem>
