@@ -38,6 +38,7 @@ export const getUser = async (headers: Headers) => {
 }
 
 export const getOnboarding = async () => {
+	return false;
 	const existingUsers = await db.select({ count: count() }).from(userSchema);
 	if (existingUsers[0].count !== 0) return false;
 	return true;
