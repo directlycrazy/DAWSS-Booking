@@ -1,20 +1,12 @@
 import SeatsGrid from "@/app/dashboard/(book)/seats-grid";
 import Title, { Subtitle } from "@/components/title";
 import { db } from "@/drizzle/db";
-import { auth } from "@/lib/auth"
+import { getUser } from "@/lib/auth-server";
 import { headers } from "next/headers"
 import { redirect } from "next/navigation";
 
 export default async function AdminSet({ params }: { params: Promise<{ id: string }> }) {
-	const session = await auth.api.getSession({
-		headers: await headers()
-	});
-
-	if (!session) return redirect("/login");
-
-	const user = await db.query.user.findFirst({
-		where: (s, { eq }) => (eq(s.id, session?.user.id || "")),
-	})
+	const user = await getUser(await headers());
 
 	if (!user || !user.role) return redirect("/login");
 

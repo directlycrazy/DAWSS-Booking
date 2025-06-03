@@ -1,20 +1,12 @@
 import { db } from "@/drizzle/db";
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { user as userSchema } from '@/drizzle/schema';
 import { NextResponse } from "next/server";
 import { eq, not } from "drizzle-orm";
+import { getUser } from "@/lib/auth-server";
 
 export const DELETE = async () => {
-    const session = await auth.api.getSession({ headers: await headers() });
-
-    if (!session?.user.id) {
-        return NextResponse.json({ message: "You are not signed in." }, { status: 401 });
-    }
-
-    const adminUser = await db.query.user.findFirst({
-        where: (s, { eq }) => eq(s.id, session.user.id),
-    });
+    const adminUser = await getUser(await headers());
 
     if (!adminUser || adminUser.role !== true) { // Assuming 'role' indicates admin status
         return NextResponse.json({ message: "You do not have permission to perform this action." }, { status: 403 });

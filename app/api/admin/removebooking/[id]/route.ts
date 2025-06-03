@@ -1,19 +1,11 @@
 import { db } from "@/drizzle/db";
-import { auth } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { user as userSchema } from '@/drizzle/schema';
+import { getUser } from "@/lib/auth-server";
 
 export const GET = async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
-	const session = await auth.api.getSession({
-		headers: await headers()
-	})
-
-	if (!session?.user.id) return new Response("You are not signed in.", { status: 400 });
-
-	const user = await db.query.user.findFirst({
-		where: (s, { eq }) => (eq(s.id, session.user.id))
-	})
+	const user = await getUser(await headers());
 
 	if (!user) return new Response("You are not signed in.", { status: 400 });
 

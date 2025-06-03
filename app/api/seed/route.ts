@@ -2,30 +2,12 @@ import { db } from "@/drizzle/db";
 import { user as userSchema } from '@/drizzle/schema';
 import { NextRequest, NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-
-function createRandomString(length: number) {
-	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	let result = "";
-	for (let i = 0; i < length; i++) {
-		result += chars.charAt(Math.floor(Math.random() * chars.length));
-	}
-	return result;
-}
+import { createRandomString } from "@/lib/utils";
+import { getUser } from "@/lib/auth-server";
 
 export const GET = async (request: NextRequest) => {
-	const session = await auth.api.getSession({
-		headers: await headers()
-	});
-
-	if (!session?.user.id) {
-		return new Response("You are not signed in.", { status: 401 });
-	}
-
-	const loggedInUser = await db.query.user.findFirst({
-		where: (s, { eq }) => (eq(s.id, session.user.id))
-	});
+	const loggedInUser = await getUser(await headers());
 
 	if (!loggedInUser || loggedInUser.role !== true) return new Response("You do not have permission to access this route.", { status: 401 });
 

@@ -14,7 +14,7 @@ const sendEmail = async (data: { email: string, url: string }, index: number, ke
 		to: [data.email],
 		subject: "Login to your Donald A. Wilson Grad Social Booking Account",
 		html: `<p>Hello Donald A. Wilson Student,</p>
-					<p>We received a request to login to your Grad Social Booking account using this email address. If you want to sign in with your ${data.email} account, please click this link:</p>
+					<p>We received a request to login to your Grad Social Booking account using this email address. If you want to sign in with your account, please click this link:</p>
 					<a href="${data.url}">Sign in to your Grad Social Account</a>
 					<p>If you did not request this, you can safely ignore this email or contact a member of staff.</p>
 					<p>Thanks,</p>
@@ -22,7 +22,7 @@ const sendEmail = async (data: { email: string, url: string }, index: number, ke
 					`,
 		text: `Hello Donald A. Wilson Student,
 
-					We received a request to login to your Grad Social Booking account using this email address. If you want to sign in with your ${data.email} account, please click this link:
+					We received a request to login to your Grad Social Booking account using this email address. If you want to sign in with your account, please click this link:
 					
 					${data.url}
 					

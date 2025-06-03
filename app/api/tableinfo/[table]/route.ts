@@ -1,15 +1,13 @@
 import { db } from "@/drizzle/db";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth-server";
 import { headers } from "next/headers";
 
 export const GET = async (request: Request, { params }: { params: Promise<{ table: string }> }) => {
-	const session = await auth.api.getSession({
-		headers: await headers()
-	});
+	const session = await getSession(await headers());
 
 	if (!session?.user.id) {
 		return new Response(JSON.stringify(null), {
-			status: 401, 
+			status: 401,
 			headers: { "content-type": "application/json" }
 		});
 	}
@@ -30,10 +28,10 @@ export const GET = async (request: Request, { params }: { params: Promise<{ tabl
 				columns: {
 					id: true,
 					name: true,
-					email: true, 
-					role: true,  
-					attending: true, 
-					hasGuest: true, 
+					email: true,
+					role: true,
+					attending: true,
+					hasGuest: true,
 				}
 			}
 		}
@@ -41,7 +39,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ tabl
 
 	if (!existingTableInfo) {
 		return new Response(JSON.stringify(null), {
-			status: 404, 
+			status: 404,
 			headers: { "content-type": "application/json" }
 		});
 	}

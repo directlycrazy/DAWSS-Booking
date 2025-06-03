@@ -1,22 +1,22 @@
 import { TicketCheck } from "lucide-react"
-import PasswordSignIn from '@/components/password-signin';
-import SignIn from '@/components/sign-in';
+import PasswordSignIn from './password';
+import SignIn from './magic-link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Image from "next/image";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
+import { getOnboarding, getSession } from "@/lib/auth-server";
 
 export const metadata: Metadata = {
 	title: "Login"
 };
 
 export default async function LoginPage() {
-	const session = await auth.api.getSession({
-		headers: await headers()
-	});
+	if (await getOnboarding()) return redirect("/onboarding");
+
+	const session = await getSession(await headers());
 
 	if (session) return redirect("/dashboard");
 

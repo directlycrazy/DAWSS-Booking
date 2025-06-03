@@ -1,49 +1,30 @@
 import SeatsGrid from "./seats-grid";
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { db } from "@/drizzle/db";
 import { Metadata } from "next";
+import { getOnboarding, getUser } from "@/lib/auth-server";
 
 export const metadata: Metadata = {
 	title: "Book"
 };
 
 export default async function Book() {
-	const session = await auth.api.getSession({
-		headers: await headers()
-	});
+	if (await getOnboarding()) return redirect("/onboarding");
 
-	if (!session?.user.id) {
-		return redirect("/login");
-	}
+	const user = await getUser(await headers());
 
-	const currentUserData = await db.query.user.findFirst({
-		where: (user, { eq }) => eq(user.id, session.user.id),
-		columns: {
-			id: true,
-			name: true,
-			email: true,
-			role: true,
-			attending: true,
-			hasGuest: true,
-			tableId: true,
-		},
-	});
-
-	if (!currentUserData) {
-		console.error("Current user data not found even with a session.");
+	if (!user) {
 		return redirect("/login");
 	}
 
 	return (
 		<div>
 			<SeatsGrid
-				currentUserId={session.user.id}
-				currentUserHasGuest={currentUserData.hasGuest ?? false}
-				initialTableId={currentUserData.tableId}
-				currentUserTableId={currentUserData.tableId}
-				currentUserRole={currentUserData.role ?? false}
+				currentUserId={user.id}
+				currentUserHasGuest={user.hasGuest ?? false}
+				initialTableId={user.tableId}
+				currentUserTableId={user.tableId}
+				currentUserRole={user.role ?? false}
 				showTitle={true}
 			/>
 		</div>

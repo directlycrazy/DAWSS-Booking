@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
 
-export default function Login() {
+export default function MagicLink() {
 	const [email, setEmail] = useState("");
 	const [buttonDisabled, setButtonDisabled] = useState(false);
 	const [timeRemaining, setTimeRemaining] = useState(0);

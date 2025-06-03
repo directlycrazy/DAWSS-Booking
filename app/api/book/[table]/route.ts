@@ -1,24 +1,14 @@
 import { db } from "@/drizzle/db";
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { user as userSchema } from '@/drizzle/schema';
 import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
+import { getUser } from "@/lib/auth-server";
 
 const TABLE_CAPACITY = 10;
 
 export const GET = async (request: NextRequest, { params }: { params: Promise<{ table: string }> }) => {
-	const session = await auth.api.getSession({
-		headers: await headers()
-	});
-
-	if (!session?.user.id) {
-		return new Response("You are not signed in.", { status: 401 });
-	}
-
-	const loggedInUser = await db.query.user.findFirst({
-		where: (s, { eq }) => (eq(s.id, session.user.id))
-	});
+	const loggedInUser = await getUser(await headers());
 
 	if (!loggedInUser) {
 		return new Response("Logged-in user not found.", { status: 401 });
@@ -35,7 +25,7 @@ export const GET = async (request: NextRequest, { params }: { params: Promise<{ 
 		return new Response("Invalid table ID format.", { status: 400 });
 	}
 
-	let targetUserId = session.user.id;
+	let targetUserId = loggedInUser.id;
 	const reqUserParam = request.nextUrl.searchParams.get("user");
 
 	let userToBook = loggedInUser;

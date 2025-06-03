@@ -6,10 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { signIn } from "@/lib/auth-client";
-import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
-export default function SignIn() {
+export default function CreateAdmin({ action }: { action: (email: string, password: string) => Promise<boolean> }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -17,9 +16,9 @@ export default function SignIn() {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle className="text-lg md:text-xl">Staff Login</CardTitle>
+				<CardTitle className="text-lg md:text-xl">Create an Admin Account</CardTitle>
 				<CardDescription className="text-xs md:text-sm">
-					Enter your staff DDSB email and password below to login to your account.
+					Since this is your first time using the application, please create an admin account to change features with.
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
@@ -56,30 +55,15 @@ export default function SignIn() {
 						className="w-full"
 						disabled={loading}
 						onClick={async () => {
-							await signIn.email(
-								{
-									email,
-									password,
-									callbackURL: "/dashboard"
-								},
-								{
-									onRequest: () => {
-										setLoading(true);
-									},
-									onResponse: () => {
-										setLoading(false);
-									},
-									onError: (ctx) => {
-										toast.error(ctx.error.message);
-									}
-								},
-							);
+							setLoading(true);
+							const res = await action(email, password)
+							if (res) redirect('/dashboard');
 						}}
 					>
 						{loading ? (
 							<Loader2 size={16} className="animate-spin" />
 						) : (
-							<p> Login </p>
+							<p> Create </p>
 						)}
 					</Button>
 				</div>

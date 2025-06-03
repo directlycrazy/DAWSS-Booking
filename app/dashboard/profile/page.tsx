@@ -1,28 +1,19 @@
 import Title, { Subtitle } from "@/components/title";
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import SignOut from "./sign-out";
 import { Metadata } from "next";
-import { db } from "@/drizzle/db";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Info } from "lucide-react";
 import Link from "next/link";
+import { getUser } from "@/lib/auth-server";
 
 export const metadata: Metadata = {
 	title: "Profile"
 };
 
 export default async function Profile() {
-	const session = await auth.api.getSession({
-		headers: await headers()
-	})
-
-	if (!session) return redirect("/login");
-
-	const user = await db.query.user.findFirst({
-		where: (s, { eq }) => (eq(s.id, session?.user.id || "")),
-	})
+	const user = await getUser(await headers());
 
 	if (!user) return redirect("/login");
 

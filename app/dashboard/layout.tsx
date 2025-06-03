@@ -1,27 +1,20 @@
 import Sidebar from "@/components/sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import Breadcrumbs from "@/components/breadcrumbs";
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { db } from "@/drizzle/db";
 import { Separator } from "@/components/ui/separator";
 import { redirect } from "next/navigation";
 import ShowSidebar from "./showSidebar";
+import { getUser } from "@/lib/auth-server";
 
 export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const session = await auth.api.getSession({
-		headers: await headers()
-	})
+	const user = await getUser(await headers());
 
-	const user = await db.query.user.findFirst({
-		where: (s, { eq }) => (eq(s.id, session?.user.id || "")),
-	})
-
-	if (!user || !session) return redirect("/login");
+	if (!user) return redirect("/login");
 
 	return (
 		<SidebarProvider>
@@ -38,7 +31,7 @@ export default async function RootLayout({
 					{children}
 				</div>
 			</SidebarInset>
-			<ShowSidebar currentUserId={session.user.id}
+			<ShowSidebar currentUserId={user.id}
 				currentUserHasGuest={user.hasGuest ?? false}
 				initialTableId={user.tableId}
 				currentUserTableId={user.tableId}
