@@ -14,6 +14,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import LocalizeTime from "./time";
 
 export const metadata: Metadata = {
 	title: "Audit Log"
@@ -49,7 +50,7 @@ export default async function AuditLog() {
 					{logs.map((log, i) => <TableRow key={i}>
 						<TableCell>{log.initiator}</TableCell>
 						<TableCell>{log.message}</TableCell>
-						<TableCell className="text-right">{log.createdAt ? log.createdAt.toLocaleString() : "Unknown"}</TableCell>
+						<TableCell className="text-right"><LocalizeTime date={log.createdAt} /></TableCell>
 					</TableRow>)}
 				</TableBody>
 			</Table>
