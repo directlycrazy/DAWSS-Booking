@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { createRandomString } from "@/lib/utils";
 import { getUser } from "@/lib/auth-server";
+import { writeLog } from "@/lib/log";
 
 export const GET = async (request: NextRequest) => {
 	const loggedInUser = await getUser(await headers());
@@ -38,6 +39,8 @@ export const GET = async (request: NextRequest) => {
 			createdAt: time,
 			updatedAt: time,
 		});
+
+		await writeLog(`The user ${name} has been created.`, "System");
 
 		return NextResponse.json({ message: `User ${name} added successfully.` }, { status: 201 });
 

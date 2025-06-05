@@ -4,6 +4,7 @@ import {
 	ChartNoAxesCombined,
 	ChevronDown,
 	Command,
+	ScrollText,
 	Users,
 	type LucideIcon,
 } from "lucide-react"
@@ -79,6 +80,14 @@ export function NavMain({
 									<Link href="/dashboard/admin/actions">
 										<Command />
 										<span>Actions</span>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+							<SidebarMenuItem onClick={() => setOpenMobile(false)}>
+								<SidebarMenuButton asChild>
+									<Link href="/dashboard/admin/events">
+										<ScrollText />
+										<span>Event Log</span>
 									</Link>
 								</SidebarMenuButton>
 							</SidebarMenuItem>

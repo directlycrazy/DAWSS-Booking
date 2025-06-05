@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { user as userSchema } from '@/drizzle/schema';
 import { getUser } from "@/lib/auth-server";
+import { writeLog } from "@/lib/log";
 
 export const GET = async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
 	const user = await getUser(await headers());
@@ -18,6 +19,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
 
 	if (!updatedUser) return;
 
+	await writeLog(`${updatedUser.name} has had their attending status changed.`, "System");
 	await db.update(userSchema).set({ attending: !updatedUser.attending }).where(eq(userSchema.id, id));
 
 	return new Response("Success", {

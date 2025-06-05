@@ -65,3 +65,10 @@ export const table = sqliteTable("table", {
 export const tableRelations = relations(table, ({ many }) => ({
 	users: many(user)
 }))
+
+export const log = sqliteTable("log", {
+	id: text('id').primaryKey(),
+	message: text("message").notNull(),
+	initiator: text("initiator"),
+	createdAt: integer('created_at', { mode: 'timestamp' }),
+})

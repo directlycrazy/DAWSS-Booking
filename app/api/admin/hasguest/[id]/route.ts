@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { user as userSchema } from '@/drizzle/schema'; // Your Drizzle user schema
 import { getUser } from "@/lib/auth-server";
+import { writeLog } from "@/lib/log";
 
 // GET handler to toggle the 'hasGuest' status for a user
 export const GET = async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
@@ -41,6 +42,8 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
 		await db.update(userSchema)
 			.set({ hasGuest: newHasGuestStatus })
 			.where(eq(userSchema.id, targetUserId));
+
+		await writeLog(`${targetUser.name} has had their guest status changed.`, "System");
 
 		// Return a success response
 		return new Response(JSON.stringify({ message: "Successfully updated 'hasGuest' status.", newStatus: newHasGuestStatus }), {

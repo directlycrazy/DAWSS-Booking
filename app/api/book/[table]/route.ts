@@ -4,6 +4,7 @@ import { user as userSchema } from '@/drizzle/schema';
 import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { getUser } from "@/lib/auth-server";
+import { writeLog } from "@/lib/log";
 
 const TABLE_CAPACITY = 10;
 
@@ -95,6 +96,8 @@ export const GET = async (request: NextRequest, { params }: { params: Promise<{ 
 		await db.update(userSchema)
 			.set({ tableId: tableId })
 			.where(eq(userSchema.id, userToBook.id));
+
+		await writeLog(`User has booked table ${tableId}.`, userToBook.name);
 
 		return new Response(`Successfully booked table ${tableId}.`, { status: 200 });
 
