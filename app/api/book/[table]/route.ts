@@ -103,7 +103,7 @@ export const GET = async (request: NextRequest, { params }: { params: Promise<{ 
 			.set({ tableId: tableId })
 			.where(eq(userSchema.id, userToBook.id));
 
-		await writeLog(`User has booked table ${tableId}.`, userToBook.name);
+		await writeLog(`Booked table ${tableId}.`, userToBook.name);
 
 		return new Response(`Successfully booked table ${tableId}.`, { status: 200 });
 

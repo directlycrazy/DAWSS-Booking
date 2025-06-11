@@ -57,7 +57,7 @@ export const auth = betterAuth({
 					Donald A. Wilson Grad Social Booking Team
 					`
 
-				await writeLog("User has attempted to login.", user.name);
+				await writeLog("Attempted to login.", user.name);
 
 				let attempt = await sendEmail(data, 0, process.env.RESEND_KEY_1 || "", template, text);
 				if (!attempt) attempt = await sendEmail(data, 2, process.env.RESEND_KEY_2 || "", template, text);

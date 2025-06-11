@@ -1,6 +1,7 @@
 import { db } from "@/drizzle/db";
 import { settings } from "@/drizzle/schema";
 import { getUser } from "@/lib/auth-server";
+import { writeLog } from "@/lib/log";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
@@ -24,6 +25,8 @@ export const POST = async (request: NextRequest) => {
 	} else {
 		await db.insert(settings).values(data);
 	}
+
+	await writeLog(`Setting "${data.id}" changed.`, "System");
 
 	return new Response("Successfully changed.", {
 		status: 200

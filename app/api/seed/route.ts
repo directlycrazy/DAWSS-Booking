@@ -40,7 +40,7 @@ export const GET = async (request: NextRequest) => {
 			updatedAt: time,
 		});
 
-		await writeLog(`The user ${name} has been created.`, "System");
+		await writeLog(`User ${name} has been created.`, "System");
 
 		return NextResponse.json({ message: `User ${name} added successfully.` }, { status: 201 });
 
