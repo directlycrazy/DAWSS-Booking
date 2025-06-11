@@ -72,3 +72,8 @@ export const log = sqliteTable("log", {
 	initiator: text("initiator"),
 	createdAt: integer('created_at', { mode: 'timestamp' }),
 })
+
+export const settings = sqliteTable("settings", {
+	id: text("id").primaryKey(),
+	value: text('value').notNull()
+})

@@ -13,14 +13,17 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import Title, { Subtitle } from "@/components/title";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function Actions() {
 	const [showDeleteAllUsersDialog, setShowDeleteAllUsersDialog] = useState(false);
 	const [showPurgeTablesDialog, setShowPurgeTablesDialog] = useState(false);
+	const [allowStudentBooking, setAllowStudentBooking] = useState(true);
 
 	const confirmDeleteAllUsers = async () => {
 		try {
@@ -48,21 +51,71 @@ export default function Actions() {
 		setShowPurgeTablesDialog(false);
 	}
 
+	const getSettings = async () => {
+		const res = await fetch(`/api/admin/settings/get`)
+		const json = await res.json();
+
+		for (let i = 0; i < json.length; i++) {
+			const setting = json[i];
+			if (setting.id === "allowUserBooking" && setting.value) setAllowStudentBooking(setting.value === "true" ? true : false);
+		}
+	}
+
+	useEffect(() => {
+		getSettings();
+	}, [])
+
+	const saveSettings = async () => {
+		try {
+			const res = await fetch(`/api/admin/settings/set`, {
+				method: "POST",
+				body: JSON.stringify({
+					id: "allowUserBooking",
+					value: String(allowStudentBooking)
+				})
+			})
+
+			const text = await res.text();
+			if (!res.ok || res.status !== 200) {
+				getSettings();
+				return toast.error("Something went wrong.");
+			}
+			toast.success(text);
+			getSettings();
+		} catch {
+			return toast.error("Something went wrong.");
+		}
+	}
+
 	return (
 		<>
 			<div>
 				<Title>Actions</Title>
-				<Subtitle>Click any of the buttons below to change features in the application. Each of these actions <b>are not reversible. Do not click any action more than once, until a notification is seen.</b></Subtitle>
+				<Subtitle>Click any of the buttons below to change features in the application. Some of these actions <b>are not reversible. Do not click any action more than once, until a notification is seen.</b></Subtitle>
 			</div>
 			<Separator className="my-4" />
-			<div className="max-w-[800px] mt-2">
+			<div className="max-w-[800px] mt-2 space-y-2">
+				<Card className="gap-0 w-full">
+					<CardHeader className="text-sm text-muted-foreground">
+						<h1 className="text-xl font-bold">App Settings</h1>
+					</CardHeader>
+					<CardContent>
+						<div className="flex items-center gap-3">
+							<Checkbox id="allow_booking" onClick={() => setAllowStudentBooking(p => !p)} checked={allowStudentBooking} />
+							<Label htmlFor="allow_booking">Allow Student Booking</Label>
+						</div>
+					</CardContent>
+					<CardFooter className="justify-end">
+						<Button onClick={() => saveSettings()}>Save</Button>
+					</CardFooter>
+				</Card>
 				<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-y-2 lg:gap-y-0 md:gap-x-2">
 					<Card className="gap-0 w-full">
 						<CardHeader className="text-sm text-muted-foreground">
 							<h1 className="text-xl font-bold">Table Actions</h1>
 						</CardHeader>
 						<CardContent>
-							<Button onClick={() => setShowPurgeTablesDialog(true)}>Purge Empty Tables</Button>
+							<Button onClick={() => setShowPurgeTablesDialog(true)}><ShieldAlert /> Purge Empty Tables</Button>
 						</CardContent>
 					</Card>
 					<Card className="gap-0 w-full">

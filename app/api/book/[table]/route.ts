@@ -15,6 +15,12 @@ export const GET = async (request: NextRequest, { params }: { params: Promise<{ 
 		return new Response("Logged-in user not found.", { status: 401 });
 	}
 
+	const bookingAllowed = await db.query.settings.findFirst({
+		where: (s, { eq }) => (eq(s.id, "allowUserBooking"))
+	})
+
+	if (bookingAllowed && bookingAllowed.value === "false" && !loggedInUser.role) return new Response("Students are currently not able to book or change tables. Either selection has closed, or not begun.", { status: 403 });
+
 	if (!loggedInUser.attending && !loggedInUser.role) {
 		return new Response("You have not been marked as attending the social. Please talk to a member of faculty to be able to book.", { status: 403 });
 	}
