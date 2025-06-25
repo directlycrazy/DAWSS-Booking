@@ -1,11 +1,20 @@
 "use client";
 
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useEffect, useState } from "react";
 
-export default function globalMessage() {
+export default function GlobalMessage() {
+	const [open, setOpen] = useState(false);
+
+	useEffect(() => {
+		if (typeof window !== "undefined" && localStorage !== undefined) {
+			setOpen(localStorage.getItem("noticeDismissed") === "true" ? false : true)
+		}
+	}, [])
+
 	return (
 		<>
-			<AlertDialog defaultOpen={localStorage.getItem("noticeDismissed") === "true" ? false : true}>
+			<AlertDialog open={open} onOpenChange={() => setOpen(!open)}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Important Notice</AlertDialogTitle>
