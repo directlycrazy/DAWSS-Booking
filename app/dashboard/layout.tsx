@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { redirect } from "next/navigation";
 import ShowSidebar from "./showSidebar";
 import { getUser } from "@/lib/auth-server";
+import GlobalMessage from "./globalMessage";
 
 export default async function RootLayout({
 	children,
@@ -36,6 +37,7 @@ export default async function RootLayout({
 				initialTableId={user.tableId}
 				currentUserTableId={user.tableId}
 				currentUserRole={user.role ?? false} />
+			<GlobalMessage />
 		</SidebarProvider>
 	);
 }
